@@ -36,7 +36,7 @@ public class EntityArgumentHandler implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter methodParameter) {
-        return methodParameter.getMethodAnnotation(Entity.class) != null;
+        return methodParameter.getParameterAnnotation(Entity.class) != null;
     }
 
     @Override
@@ -53,10 +53,15 @@ public class EntityArgumentHandler implements HandlerMethodArgumentResolver {
 
         var pathParameters = nativeWebRequest.getPathParameters();
 
-        var entityAnnotation = methodParameter.getMethodAnnotation(Entity.class);
+        var entityAnnotation = methodParameter.getParameterAnnotation(Entity.class);
         var parameterName = entityAnnotation != null ? entityAnnotation.name() : methodParameter.getParameterName();
 
-        long id = Long.parseLong(pathParameters.get(parameterName));
+        long id;
+        try {
+            id = Long.parseLong(pathParameters.get(parameterName));
+        } catch (NumberFormatException e) {
+            throw new EntityNotFoundException(ErrorCode.ENTITY_NOT_FOUND, "");
+        }
 
         return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(ErrorCode.ENTITY_NOT_FOUND, ""));
     }

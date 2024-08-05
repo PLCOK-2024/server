@@ -1,6 +1,5 @@
 package com.example.demo.user;
 
-import com.example.demo.common.argumenthandler.Auth;
 import com.example.demo.common.argumenthandler.Entity;
 import com.example.demo.user.domain.User;
 import com.example.demo.user.dto.SignupRequest;
@@ -31,7 +30,9 @@ public class UserController {
 
     @Operation(summary = "회원 상세 조회")
     @GetMapping("/{userId}")
-    public ResponseEntity<UserDetailResponse> getUserDetail(@PathVariable long userId, @Entity(name = "userId") User user) {
+    public ResponseEntity<UserDetailResponse> getUserDetail(
+        @PathVariable long userId,
+        @Entity(name = "userId") User user) {
         return ResponseEntity.ok(UserDetailResponse.from(user));
     }
 }
