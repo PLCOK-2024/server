@@ -3,6 +3,7 @@ package com.example.demo.user;
 import com.example.demo.user.dto.SignupRequest;
 import com.example.demo.user.dto.UserDetailResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class UserController {
 
     @Operation(summary = "회원가입")
     @PostMapping
-    public ResponseEntity<Long> signUp(@RequestBody SignupRequest request) {
+    public ResponseEntity<Long> signUp(@RequestBody @Valid SignupRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(userService.signUp(request));
     }
