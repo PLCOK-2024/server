@@ -39,7 +39,7 @@ public class ArchiveComment extends BaseEntity {
     @JoinColumn(name = "parent_id")
     private ArchiveComment parent;
 
-    @Size(max = 200)
+    @Size(max = 2000)
     @NotNull
     @Column(name = "content", nullable = false, length = 200)
     private String content;

@@ -1,5 +1,7 @@
 package com.example.demo.common.argumenthandler;
 
+import com.example.demo.archive.repository.ArchiveRepository;
+import com.example.demo.common.entity.Archive;
 import com.example.demo.common.error.EntityNotFoundException;
 import com.example.demo.common.error.ErrorCode;
 import com.example.demo.common.extension.NativeWebRequestExtension;
@@ -25,9 +27,11 @@ public class EntityArgumentHandler implements HandlerMethodArgumentResolver {
     private final Map<Type, JpaRepository<?, Long>> repositories = new HashMap<>();
 
     public EntityArgumentHandler(
-            UserRepository userRepository
+            UserRepository userRepository,
+            ArchiveRepository archiveRepository
     ) {
         repositories.put(User.class, userRepository);
+        repositories.put(Archive.class, archiveRepository);
     }
 
     @Override
@@ -40,7 +44,8 @@ public class EntityArgumentHandler implements HandlerMethodArgumentResolver {
             @Nullable MethodParameter methodParameter,
             ModelAndViewContainer modelAndViewContainer,
             @Nullable NativeWebRequest nativeWebRequest,
-            WebDataBinderFactory webDataBinderFactory) {
+            WebDataBinderFactory webDataBinderFactory
+    ) {
         if (nativeWebRequest == null || methodParameter == null) {
             throw new EntityNotFoundException(ErrorCode.ENTITY_NOT_FOUND, "");
         }
