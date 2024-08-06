@@ -8,8 +8,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -45,6 +45,6 @@ public class ArchiveComment extends BaseEntity {
     private String content;
 
     @OneToMany(mappedBy = "parent")
-    private Set<ArchiveComment> archiveComments = new LinkedHashSet<>();
+    private List<ArchiveComment> subComments = new ArrayList<>();
 
 }
