@@ -17,15 +17,22 @@ import java.util.List;
 public class CommentService {
     private final ArchiveCommentRepository repository;
 
-    public CommentResponse create(User author, Archive archive, CreateCommentRequest request) {
-        return null;
+    public CommentResponse create(User author, Archive archive, CreateCommentRequest request, ArchiveComment parent) {
+        var comment = ArchiveComment.builder()
+                .author(author)
+                .archive(archive)
+                .parent(parent)
+                .content(request.getContent())
+                .build();
+
+        return CommentResponse.fromEntity(repository.save(comment));
     }
 
     public List<CommentResponse> get(Archive archive) {
         return repository.getByArchive(archive).stream().map(CommentResponse::fromEntity).toList();
     }
 
-    public CommentDetailResponse find(Archive archive, ArchiveComment comment) {
+    public CommentDetailResponse find(Archive ignoredArchive, ArchiveComment comment) {
         return CommentDetailResponse.fromEntity(comment);
     }
 }
