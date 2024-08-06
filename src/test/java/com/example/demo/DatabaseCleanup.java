@@ -1,7 +1,9 @@
 package com.example.demo;
 
+import com.example.demo.common.extension.StringExtension;
 import jakarta.persistence.*;
 import jakarta.persistence.metamodel.EntityType;
+import lombok.experimental.ExtensionMethod;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -10,8 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.example.demo.common.extension.StringExtension.camelCaseToSnakeCase;
+
 @Profile("test")
 @Service
+@ExtensionMethod(StringExtension.class)
 public class DatabaseCleanup implements InitializingBean {
     @PersistenceContext
     private EntityManager entityManager;
@@ -23,17 +28,13 @@ public class DatabaseCleanup implements InitializingBean {
         tableIdColumns = entityManager.getMetamodel().getEntities().stream()
                 .filter(entity -> entity.getJavaType().getAnnotation(Entity.class) != null)
                 .collect(Collectors.toMap(
-                        entity -> camelCaseToSnakeCase(entity.getName()),
+                        entity -> entity.getName().camelCaseToSnakeCase(),
                         entity -> getIdColumnName(entity)
                 ));
     }
 
     private String getIdColumnName(EntityType<?> entity) {
         return "id";
-    }
-
-    private static String camelCaseToSnakeCase(String str) {
-        return str.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
     }
 
     @Transactional

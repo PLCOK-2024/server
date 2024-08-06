@@ -7,12 +7,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
     // Common
-    INVALID_TYPE_VALUE(400, "C001", " Invalid type value"),
-    INVALID_INPUT_VALUE(400, "C003", " Invalid input value"),
+    INVALID_TYPE_VALUE(400, "C001", "Invalid type value"),
+    INVALID_INPUT_VALUE(400, "C003", "Invalid input value"),
     METHOD_NOT_ALLOWED(405, "C004", "Method not allowed"),
     ACCESS_DENIED(403, "C005", "Access denied"),
     INTERNAL_SERVER_ERROR(500, "C006", "Internal server error"),
-    ENTITY_NOT_FOUND(404, "C007", " not found"),
+    ENTITY_NOT_FOUND(404, "C007", "Not Found"),
 
 
     // User

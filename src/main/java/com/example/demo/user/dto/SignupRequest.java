@@ -1,5 +1,5 @@
 package com.example.demo.user.dto;
-
+import com.example.demo.common.rule.Regex;
 import com.example.demo.user.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class SignupRequest {
+    @Regex(pattern = "^[A-z0-9]+\\@[A-z0-9]+\\.[A-z]+$")
     private String email;
     private String password;
 
