@@ -32,16 +32,17 @@ public class CommentController {
             @RequestBody @Valid CreateCommentRequest request,
             @PathVariable long archiveId,
             @Entity(name = "archiveId") Archive archive,
-            @Auth User author) {
+            @Auth User author
+    ) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(service.create(archive, request, author));
+                .body(service.create(author, archive, request));
     }
 
     @Operation(summary = "조회")
     @GetMapping
     public ResponseEntity<List<CommentResponse>> get(
             @PathVariable String archiveId,
-            @Entity(name = "archiveId") Archive archive
+            @Entity(name = "archiveId") @Valid Archive archive
     ) {
         return ResponseEntity.ok(service.get(archive));
     }

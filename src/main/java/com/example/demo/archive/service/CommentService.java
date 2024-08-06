@@ -17,7 +17,7 @@ import java.util.List;
 public class CommentService {
     private final ArchiveCommentRepository repository;
 
-    public CommentResponse create(Archive archive, CreateCommentRequest request, User author) {
+    public CommentResponse create(User author, Archive archive, CreateCommentRequest request) {
         return null;
     }
 
