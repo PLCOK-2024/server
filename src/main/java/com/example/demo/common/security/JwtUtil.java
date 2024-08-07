@@ -80,7 +80,7 @@ public class JwtUtil {
             request.setAttribute("exception", ErrorCode.MALFORMED_JWT_EXCEPTION);
             log.info("Invalid JWT Token", e);
         } catch (UnsupportedJwtException e) {
-            request.setAttribute("exception", ErrorCode.UNSUPPORTED_JWT_Exception);
+            request.setAttribute("exception", ErrorCode.UNSUPPORTED_JWT_EXCEPTION);
             log.info("Unsupported JWT Token", e);
         } catch (IllegalArgumentException e) {
             request.setAttribute("exception", ErrorCode.ILLEGAL_ARGUMENT_EXCEPTION);
