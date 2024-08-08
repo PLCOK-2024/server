@@ -33,9 +33,10 @@ public class CommentService {
     }
 
     public CommentCollectResponse get(Archive archive) {
+        var comments = repository.findByArchiveAndParentIsNull(archive);
         return CommentCollectResponse.builder()
-                .collect(repository.getByArchive(archive).stream().map(CommentResponse::fromEntity).toList())
-                .meta(PaginateResponse.builder().count(repository.getByArchive(archive).size()).build())
+                .collect(comments.stream().map(CommentResponse::fromEntity).toList())
+                .meta(PaginateResponse.builder().count(comments.size()).build())
                 .build();
     }
 

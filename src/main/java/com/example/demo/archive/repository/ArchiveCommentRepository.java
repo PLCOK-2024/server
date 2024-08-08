@@ -11,9 +11,5 @@ import java.util.List;
 
 @Repository
 public interface ArchiveCommentRepository extends JpaRepository<ArchiveComment, Long> {
-    @Query("SELECT c from ArchiveComment c WHERE c.archive = :archive AND c.parent IS NULL")
-    List<ArchiveComment> getByArchive(@Param("archive") Archive archive);
-
-    @Query("SELECT c from ArchiveComment c WHERE c.archive = :archive AND c.parent = :parent")
-    List<ArchiveComment> getByArchive(@Param("archive") Archive archive, @Param("parent") ArchiveComment parent);
+    List<ArchiveComment> findByArchiveAndParentIsNull(@Param("archive") Archive archive);
 }
