@@ -1,5 +1,6 @@
 package com.example.demo.archive.controller;
 
+import com.example.demo.archive.dto.CommentCollectResponse;
 import com.example.demo.archive.dto.CommentDetailResponse;
 import com.example.demo.archive.dto.CommentResponse;
 import com.example.demo.archive.dto.CreateCommentRequest;
@@ -57,7 +58,7 @@ public class CommentController {
 
     @Operation(summary = "조회")
     @GetMapping
-    public ResponseEntity<List<CommentResponse>> get(
+    public ResponseEntity<CommentCollectResponse> get(
             @PathVariable(name = "archiveId") String ignoredArchiveId,
             @Entity(name = "archiveId") @Valid Archive archive,
             @Auth User ignoredAuthor
