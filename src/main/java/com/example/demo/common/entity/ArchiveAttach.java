@@ -10,7 +10,7 @@ import lombok.*;
 @Setter
 @Entity
 @Builder
-@Table(name = "archive_attaches", schema = "test")
+@Table(name = "archive_attaches")
 @NoArgsConstructor
 @AllArgsConstructor
 public class ArchiveAttach {

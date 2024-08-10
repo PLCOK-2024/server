@@ -11,7 +11,7 @@ import lombok.*;
 @Setter
 @Entity
 @Builder
-@Table(name = "reports", schema = "test")
+@Table(name = "reports")
 @AttributeOverrides({
         @AttributeOverride(name = "createdAt", column = @Column(name = "created_at", nullable = false)),
         @AttributeOverride(name = "updatedAt", column = @Column(insertable = false)),

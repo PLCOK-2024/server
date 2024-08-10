@@ -19,7 +19,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Builder
-@Table(name = "archives", schema = "test")
+@Table(name = "archives")
 @AttributeOverrides({
         @AttributeOverride(name = "createdAt", column = @Column(name = "created_at", nullable = false)),
         @AttributeOverride(name = "updatedAt", column = @Column(name = "updated_at"))

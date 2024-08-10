@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @Entity
 @SuperBuilder
-@Table(name = "archive_comments", schema = "test")
+@Table(name = "archive_comments")
 @AttributeOverrides({
         @AttributeOverride(name = "createdAt", column = @Column(name = "created_at", nullable = false)),
         @AttributeOverride(name = "updatedAt", column = @Column(name = "updated_at"))
