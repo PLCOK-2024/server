@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "tags", schema = "test")
+@Table(name = "tags")
 @AttributeOverrides({
         @AttributeOverride(name = "createdAt", column = @Column(name = "created_at", nullable = false)),
         @AttributeOverride(name = "updatedAt", column = @Column(name = "updated_at"))
