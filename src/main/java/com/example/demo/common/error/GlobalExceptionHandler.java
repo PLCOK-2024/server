@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ClassCastException.class)
-    protected ResponseEntity<ErrorResponse> handleUnauthorized() {
+    protected ResponseEntity<ErrorResponse> handleUnauthorizedException() {
         return new ResponseEntity<>(
             ErrorResponse.of(ErrorCode.UNAUTHORIZED),
             HttpStatus.UNAUTHORIZED
