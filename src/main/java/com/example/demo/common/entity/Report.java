@@ -1,25 +1,24 @@
 package com.example.demo.common.entity;
 
 import com.example.demo.common.BaseEntity;
+import com.example.demo.common.entity.enumerated.ResourceType;
 import com.example.demo.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(name = "reports", schema = "test")
 @AttributeOverrides({
-        @AttributeOverride(name = "createdAt", column = @Column(name = "created_at"))
+        @AttributeOverride(name = "createdAt", column = @Column(name = "created_at", nullable = false)),
+        @AttributeOverride(name = "updatedAt", column = @Column(insertable = false)),
 })
+@NoArgsConstructor
+@AllArgsConstructor
 public class Report extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "author_id", nullable = false)
@@ -34,8 +33,7 @@ public class Report extends BaseEntity {
     private Long resourceId;
 
     @NotNull
-    @Lob
+    @Enumerated(EnumType.STRING)
     @Column(name = "resource_type", nullable = false)
-    private String resourceType;
-
+    private ResourceType resourceType;
 }

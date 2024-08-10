@@ -16,11 +16,6 @@ import java.util.Set;
 @Entity
 @Table(name = "notifications", schema = "test")
 public class Notification extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)

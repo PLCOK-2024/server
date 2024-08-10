@@ -15,11 +15,6 @@ import lombok.Setter;
         @AttributeOverride(name = "createdAt", column = @Column(name = "created_at", nullable = false))
 })
 public class Block extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "author_id", nullable = false)

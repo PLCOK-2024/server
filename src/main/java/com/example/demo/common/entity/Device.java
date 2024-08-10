@@ -20,11 +20,6 @@ import java.util.Set;
         @AttributeOverride(name = "updatedAt", column = @Column(name = "updated_at"))
 })
 public class Device extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
     @NotNull
     @Lob
     @Column(name = "device_type", nullable = false)

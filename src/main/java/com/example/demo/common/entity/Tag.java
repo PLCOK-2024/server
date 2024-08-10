@@ -16,11 +16,6 @@ import lombok.Setter;
         @AttributeOverride(name = "updatedAt", column = @Column(name = "updated_at"))
 })
 public class Tag extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
     @Size(max = 50)
     @NotNull
     @Column(name = "name", nullable = false, length = 50)

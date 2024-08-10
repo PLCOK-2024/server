@@ -22,11 +22,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ArchiveComment extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "author_id", nullable = false)
