@@ -5,21 +5,26 @@ import com.example.demo.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.core.annotation.Order;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(name = "archives", schema = "test")
 @AttributeOverrides({
         @AttributeOverride(name = "createdAt", column = @Column(name = "created_at", nullable = false)),
         @AttributeOverride(name = "updatedAt", column = @Column(name = "updated_at"))
 })
+@NoArgsConstructor
+@AllArgsConstructor
 public class Archive extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,8 +60,9 @@ public class Archive extends BaseEntity {
     @Column(name = "is_public", nullable = false)
     private Boolean isPublic = false;
 
-    @OneToMany(mappedBy = "archive")
-    private Set<ArchiveAttach> archiveAttaches = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "archive", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OrderBy("sequence desc")
+    private List<ArchiveAttach> archiveAttaches = new ArrayList<>();
 
     @OneToMany(mappedBy = "archive")
     private Set<ArchiveComment> archiveComments = new LinkedHashSet<>();

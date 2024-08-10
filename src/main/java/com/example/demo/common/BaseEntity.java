@@ -16,6 +16,5 @@ public abstract class BaseEntity {
     @CreatedDate
     protected LocalDateTime createdAt;
 
-    @LastModifiedDate
     protected LocalDateTime updatedAt;
 }
