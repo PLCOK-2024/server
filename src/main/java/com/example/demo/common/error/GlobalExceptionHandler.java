@@ -50,7 +50,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({NoResourceFoundException.class, MethodArgumentTypeMismatchException.class})
-    protected ResponseEntity<ErrorResponse> handle() {
+    protected ResponseEntity<ErrorResponse> handleNotFoundException() {
         return new ResponseEntity<>(
                 ErrorResponse.of(ErrorCode.ENTITY_NOT_FOUND),
                 HttpStatus.NOT_FOUND
