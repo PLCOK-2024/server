@@ -1,6 +1,6 @@
 package com.example.demo.common.security;
 
-import com.example.demo.common.error.ErrorCode;
+import com.example.demo.user.domain.User;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,12 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.Base64;
 import java.util.Date;
 
 @Component
@@ -30,12 +28,12 @@ public class JwtUtil {
     @Value("${jwt.expiration_time}")
     private long accessTokenValidTime;
 
-    private final UserDetailsServiceImpl userDetailsService;
+    private JwtParser parser;
 
     // secretKey 객체 초기화, Base64로 인코딩
     @PostConstruct
     protected void init() {
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+        parser = Jwts.parser().setSigningKey(secretKey);
     }
 
     public String createToken(Long id, LocalDateTime createdAt) {
@@ -52,43 +50,18 @@ public class JwtUtil {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        var claims = parser.parseClaimsJws(token).getBody();
+        var user = User.builder()
+                .id(Long.parseLong(claims.getSubject()))
+                .build();
+        return new UsernamePasswordAuthenticationToken(user, "", user.getAuthorities());
     }
 
-    public String getUserPk(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
-    }
-
-    public String resolveToken(HttpServletRequest request) {
+    public Authentication getAuthentication(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+            return getAuthentication(bearerToken.substring(7));
         }
-        request.setAttribute("exception", ErrorCode.TOKEN_NOT_FOUND);
         return null;
-    }
-
-    public boolean validateToken(String jwtToken, HttpServletRequest request) {
-        try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
-            return !claims.getBody().getExpiration().before(new Date());
-        } catch (ExpiredJwtException e) {
-            request.setAttribute("exception", ErrorCode.EXPIRED_JWT_EXCEPTION);
-            log.info("Expired JWT Token", e);
-        } catch (MalformedJwtException e) {
-            request.setAttribute("exception", ErrorCode.MALFORMED_JWT_EXCEPTION);
-            log.info("Invalid JWT Token", e);
-        } catch (UnsupportedJwtException e) {
-            request.setAttribute("exception", ErrorCode.UNSUPPORTED_JWT_EXCEPTION);
-            log.info("Unsupported JWT Token", e);
-        } catch (IllegalArgumentException e) {
-            request.setAttribute("exception", ErrorCode.ILLEGAL_ARGUMENT_EXCEPTION);
-            log.info("JWT claims string is empty.", e);
-        } catch (SignatureException e) {
-            request.setAttribute("exception", ErrorCode.SIGNATURE_JWT_EXCEPTION);
-            log.info("Modulated JWT Token", e);
-        }
-        return false;
     }
 }

@@ -1,7 +1,6 @@
 package com.example.demo.user.controller;
 
 import com.example.demo.common.argumenthandler.Entity;
-import com.example.demo.common.security.UserDetailsImpl;
 import com.example.demo.user.service.UserService;
 import com.example.demo.user.domain.User;
 import com.example.demo.user.dto.SignupRequest;
@@ -40,8 +39,8 @@ public class UserController {
     }
 
     @GetMapping("/userInfo")
-    public ResponseEntity<String> authenticationTest(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<String> authenticationTest(@AuthenticationPrincipal(errorOnInvalidType = true) User user) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(userDetails.user().getEmail());
+                .body(user.getEmail());
     }
 }
