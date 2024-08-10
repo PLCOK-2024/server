@@ -50,10 +50,18 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({NoResourceFoundException.class, MethodArgumentTypeMismatchException.class})
-    protected ResponseEntity<ErrorResponse> handleNotFoundException() {
+    protected ResponseEntity<ErrorResponse> handle() {
         return new ResponseEntity<>(
-            ErrorResponse.of(ErrorCode.ENTITY_NOT_FOUND),
-            HttpStatus.NOT_FOUND
+                ErrorResponse.of(ErrorCode.ENTITY_NOT_FOUND),
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    @ExceptionHandler(ClassCastException.class)
+    protected ResponseEntity<ErrorResponse> handleUnauthorized() {
+        return new ResponseEntity<>(
+            ErrorResponse.of(ErrorCode.UNAUTHORIZED),
+            HttpStatus.UNAUTHORIZED
         );
     }
 
