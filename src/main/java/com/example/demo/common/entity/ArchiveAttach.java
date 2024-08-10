@@ -4,14 +4,16 @@ import com.example.demo.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(name = "archive_attaches", schema = "test")
-public class ArchiveAttach extends BaseEntity {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ArchiveAttach {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -21,6 +23,15 @@ public class ArchiveAttach extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "archive_id", nullable = false)
     private Archive archive;
+
+    @Size(max = 200)
+    @NotNull
+    @Column(name = "name", nullable = false, length = 200)
+    private String name;
+
+    @NotNull
+    @Column(name = "sequence", nullable = false, length = 200)
+    private byte sequence;
 
     @Size(max = 200)
     @NotNull
