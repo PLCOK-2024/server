@@ -1,6 +1,7 @@
 package com.example.demo.common.entity;
 
 import com.example.demo.common.BaseEntity;
+import com.example.demo.common.entity.enumerated.ResourceType;
 import com.example.demo.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -25,7 +26,7 @@ import java.util.Set;
 })
 @NoArgsConstructor
 @AllArgsConstructor
-public class Archive extends BaseEntity {
+public class Archive extends BaseEntity implements IReportable {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "author_id", nullable = false)
@@ -68,4 +69,13 @@ public class Archive extends BaseEntity {
     @OneToMany(mappedBy = "archive")
     private Set<ArchiveTag> archiveTags = new LinkedHashSet<>();
 
+    @Override
+    public User getUser() {
+        return author;
+    }
+
+    @Override
+    public ResourceType getResourceType() {
+        return ResourceType.ARCHIVE;
+    }
 }

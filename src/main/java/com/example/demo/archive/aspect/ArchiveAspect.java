@@ -1,4 +1,4 @@
-package com.example.demo.archive.Aspect;
+package com.example.demo.archive.aspect;
 
 import com.example.demo.common.entity.Archive;
 import com.example.demo.common.entity.ArchiveComment;
@@ -8,6 +8,8 @@ import com.example.demo.user.domain.User;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -22,13 +24,17 @@ public class ArchiveAspect {
     @Around("execution(* com.example.demo.archive.controller.*.*(..))")
     public Object isOwnerIsPrivate(ProceedingJoinPoint joinPoint) throws Throwable {
         var args = joinPoint.getArgs();
+        var method = ((MethodSignature) joinPoint.getSignature()).getMethod();
+        var parameters = method.getParameters();
 
         Archive archive = null;
         User user = null;
-        for (Object arg : args) {
+        for (int i = 0; i < args.length; i++) {
+            var arg = args[i];
             if (arg instanceof Archive a) {
                 archive = a;
-            } else if (arg instanceof User u) {
+            } else if (arg instanceof User u && parameters[i].getAnnotation(AuthenticationPrincipal.class) != null) {
+                // 로그인 된 유저
                 user = u;
             }
         }
