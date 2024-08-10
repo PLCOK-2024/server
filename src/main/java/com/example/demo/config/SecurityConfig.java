@@ -37,10 +37,7 @@ public class SecurityConfig {
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorizeRequests) -> authorizeRequests
-                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/auth/**")).permitAll()
-                        .requestMatchers(new MvcRequestMatcher(introspector, "/api-docs/**")).permitAll()
-                        .requestMatchers(new MvcRequestMatcher(introspector, "/swagger-ui/**")).permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers(new MvcRequestMatcher(introspector, "/**")).permitAll())
                 .headers(headersConfigurer -> headersConfigurer
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

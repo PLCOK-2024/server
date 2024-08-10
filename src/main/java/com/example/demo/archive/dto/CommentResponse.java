@@ -21,7 +21,7 @@ public class CommentResponse {
         return fromEntity(comment, builder());
     }
 
-    public static <T extends CommentResponse> T fromEntity(ArchiveComment comment,  CommentResponse.CommentResponseBuilder<T, ?> builder) {
+    public static <T extends CommentResponse> T fromEntity(ArchiveComment comment, CommentResponse.CommentResponseBuilder<T, ?> builder) {
         return builder
                 .id(comment.getId())
                 .content(comment.getContent())
