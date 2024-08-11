@@ -42,12 +42,12 @@ public class Archive extends BaseEntity {
     private Point location;
 
     @NotNull
-    @Column(name = "position_x", nullable = false, precision = 10, scale = 2)
-    private BigDecimal positionX;
+    @Column(name = "position_x", nullable = false, precision = 10)
+    private Double positionX;
 
     @NotNull
-    @Column(name = "position_y", nullable = false, precision = 10, scale = 2)
-    private BigDecimal positionY;
+    @Column(name = "position_y", nullable = false, precision = 10)
+    private Double positionY;
 
     @Size(max = 200)
     @Column(name = "address", length = 500)

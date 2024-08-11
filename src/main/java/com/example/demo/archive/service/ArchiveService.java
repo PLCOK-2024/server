@@ -83,8 +83,8 @@ public class ArchiveService {
                 .collect(Collectors.toList());
     }
 
-    private Point generateLocation(BigDecimal x, BigDecimal y) {
-        String pointWKT = String.format("POINT(%s %s)", x, y);
+    private Point generateLocation(double x, double y) {
+        String pointWKT = String.format("POINT(%s %s)", y, x);
         Point location = null;
         try {
             location = (Point) new WKTReader().read(pointWKT);

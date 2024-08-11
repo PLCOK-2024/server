@@ -37,4 +37,13 @@ public class ArchiveController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(service.create(author, request ,attaches));
     }
+
+    @GetMapping("/{x}/{y}")
+    public ResponseEntity<List<ArchiveResponse>> findNearArchives(
+            @Auth User user,
+            @PathVariable(value = "x") double currentX,
+            @PathVariable(value = "y") double currentY
+    ) {
+        return ResponseEntity.ok(service.findNearArchives(user, currentX, currentY));
+    }
 }

@@ -17,19 +17,31 @@ public class ArchiveRepositoryImpl implements ArchiveRepositoryCustom {
 
     @Override
     public List<Archive> findNearArchives(double currentX, double currentY) {
-        Pair<Double, Double> northEast = RadiusCalculator.calculateByDirection(currentX, currentY, DISTANCE, CardinalDirection.NORTHEAST.getBearing());
-        Pair<Double, Double> southWest = RadiusCalculator.calculateByDirection(currentX, currentY, DISTANCE, CardinalDirection.SOUTHWEST.getBearing());
+        double baseLatitude = currentX;
+        double baseLongitude = currentY;
 
-        double x1 = northEast.getSecond();
-        double y1 = northEast.getFirst();
-        double x2 = southWest.getSecond();
-        double y2 = southWest.getFirst();
+        Pair<Double, Double> northEast = RadiusCalculator.calculateByDirection(baseLatitude, baseLongitude, DISTANCE, CardinalDirection.NORTHEAST.getBearing());
+        Pair<Double, Double> southWest = RadiusCalculator.calculateByDirection(baseLatitude, baseLongitude, DISTANCE, CardinalDirection.SOUTHWEST.getBearing());
 
-        Query query = entityManager.createNativeQuery("" +
-                        "SELECT * \n" +
+        double x1 = northEast.getSecond(); // longitude
+        double y1 = northEast.getFirst();  // latitude
+        double x2 = southWest.getSecond(); // longitude
+        double y2 = southWest.getFirst();  // latitude
+
+        String polygonWKT = String.format("POLYGON((%f %f, %f %f, %f %f, %f %f, %f %f))",
+                x2, y2,   // southWest
+                x2, y1,   // northWest
+                x1, y1,   // northEast
+                x1, y2,   // southEast
+                x2, y2);
+
+        Query query = entityManager.createNativeQuery(
+                "SELECT * \n" +
                         "FROM archives AS a \n" +
-                        "WHERE MBRContains(ST_LINESTRINGFROMTEXT(" + String.format("'LINESTRING(%f %f, %f %f)')", x1, y1, x2, y2) + ", a.location)"
+                        "WHERE MBRContains(ST_POLYGONFROMTEXT('" + polygonWKT + "'), a.location)"
+                , Archive.class
         );
-        return query.getResultList();
+
+        return (List<Archive>) query.getResultList();
     }
 }

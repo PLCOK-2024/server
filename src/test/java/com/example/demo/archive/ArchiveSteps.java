@@ -9,6 +9,7 @@ import io.restassured.http.ContentType;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 public class ArchiveSteps {
     public static ArchiveResponse createArchive(String token, CreateArchiveRequest request) throws IOException {
@@ -23,5 +24,16 @@ public class ArchiveSteps {
                 .then().log().all()
                 .statusCode(201)
                 .extract().as(ArchiveResponse.class);
+    }
+
+    public static List<ArchiveResponse> findNearArchives(String token, double x, double y) {
+        return RestAssured
+                .given().log().all()
+                .when()
+                .auth().oauth2(token)
+                .get("/api/archives/{x}/{y}", x, y)
+                .then().log().all()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", ArchiveResponse.class);
     }
 }
