@@ -1,12 +1,12 @@
 package com.example.demo.user.controller;
 
-import com.example.demo.archive.dto.CreateCommentRequest;
 import com.example.demo.common.argumenthandler.Entity;
-import com.example.demo.user.dto.BlockRequest;
 import com.example.demo.user.service.UserService;
 import com.example.demo.user.domain.User;
 import com.example.demo.user.dto.SignupRequest;
 import com.example.demo.user.dto.UserDetailResponse;
+import com.example.demo.user.service.relationship.UserBlockService;
+import com.example.demo.user.service.relationship.UserFollowService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
@@ -23,6 +23,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "회원 API")
 public class UserController {
     private final UserService userService;
+    private final UserBlockService userBlockService;
+    private final UserFollowService userFollowService;
 
     @Operation(summary = "회원가입")
     @PostMapping
@@ -54,10 +56,42 @@ public class UserController {
     public ResponseEntity<UserDetailResponse> block(
             @PathVariable(name = "userId") long ignoredUserId,
             @Entity(name = "userId") User user,
-            @AuthenticationPrincipal(errorOnInvalidType = true) User author,
-            @RequestBody BlockRequest request
+            @AuthenticationPrincipal(errorOnInvalidType = true) User author
     ) {
-        userService.block(request, author, user);
+        userBlockService.link(author, user);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "회원 차단해제")
+    @PostMapping("/{userId}/unblock")
+    public ResponseEntity<UserDetailResponse> unblock(
+            @PathVariable(name = "userId") long ignoredUserId,
+            @Entity(name = "userId") User user,
+            @AuthenticationPrincipal(errorOnInvalidType = true) User author
+    ) {
+        userBlockService.unlink(author, user);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "회원 팔로우")
+    @PostMapping("/{userId}/follow")
+    public ResponseEntity<UserDetailResponse> follow(
+            @PathVariable(name = "userId") long ignoredUserId,
+            @Entity(name = "userId") User user,
+            @AuthenticationPrincipal(errorOnInvalidType = true) User author
+    ) {
+        userFollowService.link(author, user);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "회원 팔로우 해제")
+    @PostMapping("/{userId}/unfollow")
+    public ResponseEntity<UserDetailResponse> unfollow(
+            @PathVariable(name = "userId") long ignoredUserId,
+            @Entity(name = "userId") User user,
+            @AuthenticationPrincipal(errorOnInvalidType = true) User author
+    ) {
+        userFollowService.unlink(author, user);
         return ResponseEntity.noContent().build();
     }
 
