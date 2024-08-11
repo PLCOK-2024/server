@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -72,6 +73,14 @@ public class ArchiveService {
         archive.setArchiveAttaches(attachEntities);
 
         return ArchiveResponse.fromEntity(archive);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ArchiveResponse> findNearArchives(User author, double currentX, double currentY) {
+        return archiveRepository.findNearArchives(currentX, currentY)
+                .stream()
+                .map(ArchiveResponse::fromEntity)
+                .collect(Collectors.toList());
     }
 
     private Point generateLocation(BigDecimal x, BigDecimal y) {
