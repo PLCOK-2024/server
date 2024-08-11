@@ -1,6 +1,8 @@
 package com.example.demo.user.controller;
 
+import com.example.demo.archive.dto.CreateCommentRequest;
 import com.example.demo.common.argumenthandler.Entity;
+import com.example.demo.user.dto.BlockRequest;
 import com.example.demo.user.service.UserService;
 import com.example.demo.user.domain.User;
 import com.example.demo.user.dto.SignupRequest;
@@ -30,12 +32,33 @@ public class UserController {
                 .body(userService.signUp(request));
     }
 
+    @Operation(summary = "로그인된 회원 조회")
+    @GetMapping("/@me")
+    public ResponseEntity<UserDetailResponse> getLoginUserDetail(
+            @AuthenticationPrincipal(errorOnInvalidType = true) User user
+    ) {
+        return ResponseEntity.ok(userService.find(user));
+    }
+
     @Operation(summary = "회원 상세 조회")
     @GetMapping("/{userId}")
     public ResponseEntity<UserDetailResponse> getUserDetail(
-        @PathVariable long userId,
-        @Entity(name = "userId") User user) {
-        return ResponseEntity.ok(UserDetailResponse.from(user));
+            @PathVariable(name = "userId") long ignoredUserId,
+            @Entity(name = "userId") User user
+    ) {
+        return ResponseEntity.ok(userService.find(user));
+    }
+
+    @Operation(summary = "회원 차단")
+    @PostMapping("/{userId}/block")
+    public ResponseEntity<UserDetailResponse> block(
+            @PathVariable(name = "userId") long ignoredUserId,
+            @Entity(name = "userId") User user,
+            @AuthenticationPrincipal(errorOnInvalidType = true) User author,
+            @RequestBody BlockRequest request
+    ) {
+        userService.block(request, author, user);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/userInfo")
