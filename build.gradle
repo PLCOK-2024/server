@@ -57,6 +57,14 @@ dependencies {
 
     // javax.xml.bind
     implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+
+    // MySQL MBR
+    implementation 'org.hibernate:hibernate-spatial:6.6.0.Final'
+    // jpa contains 에러 때문에 버전 낮춤
+//    implementation ("org.springframework.boot:spring-boot-starter-data-jpa") {
+//        exclude group: "org.hibernate", module: "hibernate-core"
+//    }
+//    implementation "org.hibernate:hibernate-core:5.6.5.Final"
 }
 
 tasks.named('test') {

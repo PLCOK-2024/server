@@ -10,12 +10,16 @@ import com.example.demo.common.storage.IStorageManager;
 import com.example.demo.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.ExtensionMethod;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -34,8 +38,11 @@ public class ArchiveService {
             attaches = new ArrayList<>();
         }
 
+        Point location = generateLocation(request.getPositionX(), request.getPositionY());
+
         // 아카이브 생성
         var archive = Archive.builder()
+                .location(location)
                 .positionX(request.getPositionX())
                 .positionY(request.getPositionY())
                 .address(request.getAddress())
@@ -65,5 +72,16 @@ public class ArchiveService {
         archive.setArchiveAttaches(attachEntities);
 
         return ArchiveResponse.fromEntity(archive);
+    }
+
+    private Point generateLocation(BigDecimal x, BigDecimal y) {
+        String pointWKT = String.format("POINT(%s %s)", x, y);
+        Point location = null;
+        try {
+            location = (Point) new WKTReader().read(pointWKT);
+        } catch (ParseException ex) {
+            return null;
+        }
+        return location;
     }
 }

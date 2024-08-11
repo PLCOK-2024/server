@@ -4,6 +4,7 @@ import com.example.demo.common.extension.StringExtension;
 import jakarta.persistence.*;
 import jakarta.persistence.metamodel.EntityType;
 import lombok.experimental.ExtensionMethod;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -12,11 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.example.demo.common.extension.StringExtension.camelCaseToSnakeCase;
-
 @Profile("test")
 @Service
 @ExtensionMethod(StringExtension.class)
+@Slf4j
 public class DatabaseCleanup implements InitializingBean {
     @PersistenceContext
     private EntityManager entityManager;
@@ -26,9 +26,11 @@ public class DatabaseCleanup implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         tableIdColumns = entityManager.getMetamodel().getEntities().stream()
-                .filter(entity -> entity.getJavaType().getAnnotation(Entity.class) != null)
                 .collect(Collectors.toMap(
-                        entity -> entity.getName().camelCaseToSnakeCase(),
+                        entity -> {
+                            Table tableAnnotation = entity.getJavaType().getAnnotation(Table.class);
+                            return tableAnnotation != null ? tableAnnotation.name() : entity.getName();
+                        },
                         entity -> getIdColumnName(entity)
                 ));
     }
@@ -44,6 +46,7 @@ public class DatabaseCleanup implements InitializingBean {
         for (Map.Entry<String, String> entry : tableIdColumns.entrySet()) {
             String tableName = entry.getKey();
             String idColumn = entry.getValue();
+
             if (!isTableExists(tableName)) {
                 continue;
             }
@@ -56,7 +59,7 @@ public class DatabaseCleanup implements InitializingBean {
     private boolean isTableExists(String tableName) {
         String checkTableQuery = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :tableName";
         Query query = entityManager.createNativeQuery(checkTableQuery);
-        query.setParameter("tableName", tableName.toUpperCase());
+        query.setParameter("tableName", tableName);
         Long count = (Long) query.getSingleResult();
         return count > 0;
     }

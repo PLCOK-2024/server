@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.locationtech.jts.geom.Point;
 import org.springframework.core.annotation.Order;
 
 import java.math.BigDecimal;
@@ -35,6 +36,10 @@ public class Archive extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
+
+    @NotNull
+    @Column(columnDefinition = "geometry")
+    private Point location;
 
     @NotNull
     @Column(name = "position_x", nullable = false, precision = 10, scale = 2)
