@@ -1,5 +1,6 @@
 package com.example.demo.common.security;
 
+import com.example.demo.common.error.ErrorCode;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,7 +30,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         try {
             SecurityContextHolder.getContext().setAuthentication(jwtUtil.getAuthentication(request));
-        } catch (JwtException ignored) {
+        } catch (JwtException e) {
+            request.setAttribute("exception", ErrorCode.UNAUTHORIZED);
         } catch (Exception e) {
             log.error("FAIL JWT DECODE", e);
         } finally {

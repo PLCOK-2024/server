@@ -1,5 +1,6 @@
 package com.example.demo.common.error;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -57,8 +58,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(ClassCastException.class)
+    @ExceptionHandler({ClassCastException.class, ExpiredJwtException.class})
     protected ResponseEntity<ErrorResponse> handleUnauthorizedException() {
+        System.out.println(9999);
         return new ResponseEntity<>(
             ErrorResponse.of(ErrorCode.UNAUTHORIZED),
             HttpStatus.UNAUTHORIZED
