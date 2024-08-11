@@ -8,8 +8,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.lang.reflect.Type;
-
 @Getter
 @Setter
 @Entity
