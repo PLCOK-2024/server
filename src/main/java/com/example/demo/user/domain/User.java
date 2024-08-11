@@ -28,6 +28,10 @@ public class User extends BaseEntity implements UserDetails {
 
     private String password;
 
+    private String profileImage;
+
+    private String description;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "ROLE", nullable = false)
     @Setter
@@ -36,7 +40,7 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<String> roles = new ArrayList<>();
-        roles.add("ROLE_" + getRole().toString());
+        roles.add("ROLE_" + getRole());
 
         return roles.stream()
                 .map(SimpleGrantedAuthority::new)

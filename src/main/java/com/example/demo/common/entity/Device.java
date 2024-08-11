@@ -1,6 +1,7 @@
 package com.example.demo.common.entity;
 
 import com.example.demo.common.BaseEntity;
+import com.example.demo.common.entity.enumerted.DeviceType;
 import com.example.demo.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -26,9 +27,9 @@ public class Device extends BaseEntity {
     private Long id;
 
     @NotNull
-    @Lob
     @Column(name = "device_type", nullable = false)
-    private String deviceType;
+    @Enumerated(EnumType.STRING)
+    private DeviceType deviceType;
 
     @Size(max = 200)
     @NotNull

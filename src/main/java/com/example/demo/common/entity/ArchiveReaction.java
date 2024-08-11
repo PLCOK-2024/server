@@ -1,11 +1,14 @@
 package com.example.demo.common.entity;
 
 import com.example.demo.common.BaseEntity;
+import com.example.demo.common.entity.enumerted.ReactionType;
 import com.example.demo.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.lang.reflect.Type;
 
 @Getter
 @Setter
@@ -31,8 +34,8 @@ public class ArchiveReaction extends BaseEntity {
     private User author;
 
     @NotNull
-    @Lob
+    @Enumerated(EnumType.STRING)
     @Column(name = "reaction_type", nullable = false)
-    private String reactionType;
+    private ReactionType reactionType;
 
 }

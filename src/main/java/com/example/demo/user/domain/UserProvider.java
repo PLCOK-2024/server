@@ -1,6 +1,7 @@
 package com.example.demo.user.domain;
 
 import com.example.demo.common.BaseEntity;
+import com.example.demo.common.entity.enumerted.ProviderType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -21,9 +22,9 @@ public class UserProvider extends BaseEntity {
     private Long id;
 
     @NotNull
-    @Lob
     @Column(name = "provider_type", nullable = false)
-    private String providerType;
+    @Enumerated(EnumType.STRING)
+    private ProviderType providerType;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
