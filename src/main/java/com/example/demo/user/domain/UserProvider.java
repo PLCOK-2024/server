@@ -12,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "user_providers", schema = "test")
+@Table(name = "user_providers")
 @AttributeOverrides({
         @AttributeOverride(name = "createdAt", column = @Column(name = "created_at", nullable = false))
 })

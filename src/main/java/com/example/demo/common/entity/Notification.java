@@ -14,7 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "notifications", schema = "test")
+@Table(name = "notifications")
 public class Notification extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
