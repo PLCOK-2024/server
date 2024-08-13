@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler({ClassCastException.class, ExpiredJwtException.class})
+    @ExceptionHandler({ClassCastException.class})
     protected ResponseEntity<ErrorResponse> handleUnauthorizedException() {
         return new ResponseEntity<>(
             ErrorResponse.of(ErrorCode.UNAUTHORIZED),
