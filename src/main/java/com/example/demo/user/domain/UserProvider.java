@@ -4,12 +4,14 @@ import com.example.demo.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "user_providers", schema = "test")
 @AttributeOverrides({
         @AttributeOverride(name = "createdAt", column = @Column(name = "created_at", nullable = false))
@@ -34,4 +36,12 @@ public class UserProvider extends BaseEntity {
     @NotNull
     @Column(name = "provider_user_id", nullable = false, length = 100)
     private String providerUserId;
+
+    public static UserProvider of(String providerType, User user, String providerUserId) {
+        return builder()
+                .providerType(providerType)
+                .user(user)
+                .providerUserId(providerUserId)
+                .build();
+    }
 }
