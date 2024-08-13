@@ -21,7 +21,6 @@ import static java.util.stream.Collectors.toList;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@DynamicInsert
 public class User extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +32,6 @@ public class User extends BaseEntity implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "ROLE", nullable = false)
-    @ColumnDefault(value = "'USER'")
     @Setter
     private RoleType role = RoleType.USER;
 
