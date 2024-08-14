@@ -1,6 +1,8 @@
 package com.example.demo.user.service;
 
-import com.example.demo.common.oauth.OAuth2Attributes;
+import com.example.demo.common.error.BusinessException;
+import com.example.demo.common.error.ErrorCode;
+import com.example.demo.common.oauth.*;
 import com.example.demo.common.security.JwtUtil;
 import com.example.demo.user.domain.User;
 import com.example.demo.user.domain.UserProvider;
@@ -9,18 +11,17 @@ import com.example.demo.user.dto.SocialLoginResponse;
 import com.example.demo.user.repository.UserProviderRepository;
 import com.example.demo.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
@@ -38,59 +39,51 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     private final UserProviderRepository userProviderRepository;
 
-    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
-    private String CLIENT_ID;
-
-    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
-    private String REDIRECT_URI;
-
-    @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
-    private String CLIENT_SECRET;
-
-    @Value("${spring.security.oauth2.client.registration.google.client-id}")
-    private String GOOGLE_CLIENT_ID;
-
-    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
-    private String GOOGLE_REDIRECT_URI;
-
-    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
-    private String GOOGLE_CLIENT_SECRET;
+    private final OAuthRequestBodyFactoryProvider oAuthRequestBodyFactoryProvider;
 
     @Override
     @Transactional
     public SocialLoginResponse login(SocialLoginRequest requestDto) {
         String providerType = requestDto.getProviderType();
         String token = requestDto.getAccessToken();
-        Map<String, Object> map = (Map<String, Object>) getUserAttributes(providerType, token);
-        OAuth2Attributes attributes = OAuth2Attributes.of(providerType, map);
-        Optional<UserProvider> userProviderOptional = userProviderRepository
-                .findByProviderTypeAndProviderUserId(attributes.getProviderType(), attributes.getProviderUserId());
 
-        User user;
-        if (userProviderOptional.isPresent()) {
-            user = userProviderOptional.get().getUser();
-        } else {
-            user = new User();
-            userRepository.save(user);
-            UserProvider userProvider = UserProvider
-                    .of(attributes.getProviderType(), user, attributes.getProviderUserId());
-            userProviderRepository.save(userProvider);
-        }
+        Map<String, Object> map = getUserAttributes(providerType, token);
+        OAuth2Attributes attributes = OAuth2Attributes.of(providerType, map);
+
+        User user = findOrCreateUser(attributes);
         return SocialLoginResponse
                 .from(jwtUtil.createToken(user.getId(), user.getRole(), user.getCreatedAt()));
     }
 
-    private Map<?, ?> getUserAttributes(String providerType, String token) {
+    private User findOrCreateUser(OAuth2Attributes attributes) {
+        return userProviderRepository.findByProviderTypeAndProviderUserId(attributes.getProviderType(), attributes.getProviderUserId())
+                .map(UserProvider::getUser)
+                .orElseGet(() -> createUser(attributes));
+    }
+
+    private User createUser(OAuth2Attributes attributes) {
+        User user = new User();
+        userRepository.save(user);
+        UserProvider userProvider = UserProvider.of(attributes.getProviderType(), user, attributes.getProviderUserId());
+        userProviderRepository.save(userProvider);
+        return user;
+    }
+
+    private Map<String, Object> getUserAttributes(String providerType, String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(headers);
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate
                 .exchange(getRequestUrl(providerType), HttpMethod.GET, request, String.class);
+        return parseResponseBody(response.getBody());
+    }
+
+    private Map<String, Object> parseResponseBody(String responseBody) {
         try {
-            return new ObjectMapper().readValue(response.getBody(), Map.class);
+            return new ObjectMapper().readValue(responseBody, new TypeReference<Map<String, Object>>() {});
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to parse user attributes", e);
         }
     }
 
@@ -109,20 +102,16 @@ public class AuthUserServiceImpl implements AuthUserService {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
+        OAuthRequestBodyFactory factory = oAuthRequestBodyFactoryProvider.getFactory(providerType);
+
         // HTTP Body 생성
-        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("grant_type", "authorization_code");
-        body.add("client_id", providerType.equals("Kakao") ? CLIENT_ID : GOOGLE_CLIENT_ID);
-        body.add("redirect_uri", providerType.equals("Kakao") ? REDIRECT_URI : GOOGLE_REDIRECT_URI);
-        body.add("client_secret", providerType.equals("Kakao") ? CLIENT_SECRET : GOOGLE_CLIENT_SECRET);
-        body.add("code", code);
+        MultiValueMap<String, String> body = factory.createRequestBody(code);
 
         // HTTP 요청 보내기
-        HttpEntity<MultiValueMap<String, String>> tokenRequest =
-                new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, String>> tokenRequest = new HttpEntity<>(body, headers);
         RestTemplate rt = new RestTemplate();
         ResponseEntity<String> response = rt.exchange(
-                getUrl(providerType),
+                factory.getRequestUrl(),
                 HttpMethod.POST,
                 tokenRequest,
                 String.class
@@ -133,13 +122,5 @@ public class AuthUserServiceImpl implements AuthUserService {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         return jsonNode.get("access_token").asText();
-    }
-
-    private String getUrl(String providerType) {
-        if ("Kakao".equals(providerType)) {
-            return "https://kauth.kakao.com/oauth/token";
-        } else {
-            return "https://www.googleapis.com/oauth2/v4/token";
-        }
     }
 }
