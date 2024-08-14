@@ -1,11 +1,14 @@
 package com.example.demo.archive.dto;
 
+import com.example.demo.common.rule.UniqueElementsBy;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -35,4 +38,8 @@ public class CreateArchiveRequest {
 
     @JsonProperty("is_public")
     private boolean isPublic = true;
+
+    @Size(max = 10)
+    @UniqueElementsBy
+    private List<TagRequest> tags = new ArrayList<>();
 }

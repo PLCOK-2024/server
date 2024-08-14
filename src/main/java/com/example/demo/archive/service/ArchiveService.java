@@ -5,21 +5,20 @@ import com.example.demo.archive.dto.CreateArchiveRequest;
 import com.example.demo.archive.repository.ArchiveRepository;
 import com.example.demo.common.entity.Archive;
 import com.example.demo.common.entity.ArchiveAttach;
+import com.example.demo.common.entity.ArchiveTag;
 import com.example.demo.common.extension.FileExtension;
 import com.example.demo.common.storage.IStorageManager;
 import com.example.demo.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.ExtensionMethod;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +44,7 @@ public class ArchiveService {
                 .author(author)
                 .build();
 
-        archive = archiveRepository.save(archive);
+        archiveRepository.save(archive);
 
         // 첨부 생성
         List<ArchiveAttach> attachEntities = new ArrayList<>();
@@ -63,6 +62,16 @@ public class ArchiveService {
             attachEntities.add(build);
         }
         archive.setArchiveAttaches(attachEntities);
+
+        var index = new AtomicInteger();
+        archive.setTags(
+                request.getTags().stream().map(o -> ArchiveTag.builder()
+                        .name(o.getName())
+                        .archive(archive)
+                        .sequence(index.getAndIncrement())
+                        .build()
+                ).toList()
+        );
 
         return ArchiveResponse.fromEntity(archive);
     }
