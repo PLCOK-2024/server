@@ -16,10 +16,7 @@ public class ArchiveRepositoryImpl implements ArchiveRepositoryCustom {
     private final double DISTANCE = 3;
 
     @Override
-    public List<Archive> findNearArchives(double currentX, double currentY) {
-        double baseLatitude = currentX;
-        double baseLongitude = currentY;
-
+    public List<Archive> findNearArchives(double baseLatitude, double baseLongitude) {
         Pair<Double, Double> northEast = RadiusCalculator.calculateByDirection(baseLatitude, baseLongitude, DISTANCE, CardinalDirection.NORTHEAST.getBearing());
         Pair<Double, Double> southWest = RadiusCalculator.calculateByDirection(baseLatitude, baseLongitude, DISTANCE, CardinalDirection.SOUTHWEST.getBearing());
 
@@ -38,7 +35,8 @@ public class ArchiveRepositoryImpl implements ArchiveRepositoryCustom {
         Query query = entityManager.createNativeQuery(
                 "SELECT * \n" +
                         "FROM archives AS a \n" +
-                        "WHERE MBRContains(ST_POLYGONFROMTEXT('" + polygonWKT + "'), a.location)"
+                        "WHERE MBRContains(ST_POLYGONFROMTEXT('" + polygonWKT + "'), a.location)" +
+                        "AND a.is_public = true"
                 , Archive.class
         );
 

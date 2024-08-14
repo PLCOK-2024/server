@@ -1,5 +1,6 @@
 package com.example.demo.archive.controller;
 
+import com.example.demo.archive.dto.ArchiveCollectResponse;
 import com.example.demo.archive.dto.ArchiveResponse;
 import com.example.demo.archive.dto.CreateArchiveRequest;
 import com.example.demo.archive.service.ArchiveService;
@@ -38,11 +39,11 @@ public class ArchiveController {
                 .body(service.create(author, request ,attaches));
     }
 
-    @GetMapping("/{x}/{y}")
-    public ResponseEntity<List<ArchiveResponse>> findNearArchives(
+    @GetMapping
+    public ResponseEntity<ArchiveCollectResponse> findNearArchives(
             @Auth User user,
-            @PathVariable(value = "x") double currentX,
-            @PathVariable(value = "y") double currentY
+            @RequestParam(value = "x") double currentX,
+            @RequestParam(value = "y") double currentY
     ) {
         return ResponseEntity.ok(service.findNearArchives(user, currentX, currentY));
     }

@@ -1,8 +1,10 @@
 package com.example.demo.archive.service;
 
+import com.example.demo.archive.dto.ArchiveCollectResponse;
 import com.example.demo.archive.dto.ArchiveResponse;
 import com.example.demo.archive.dto.CreateArchiveRequest;
 import com.example.demo.archive.repository.ArchiveRepository;
+import com.example.demo.common.dto.PaginateResponse;
 import com.example.demo.common.entity.Archive;
 import com.example.demo.common.entity.ArchiveAttach;
 import com.example.demo.common.extension.FileExtension;
@@ -76,11 +78,12 @@ public class ArchiveService {
     }
 
     @Transactional(readOnly = true)
-    public List<ArchiveResponse> findNearArchives(User author, double currentX, double currentY) {
-        return archiveRepository.findNearArchives(currentX, currentY)
-                .stream()
-                .map(ArchiveResponse::fromEntity)
-                .collect(Collectors.toList());
+    public ArchiveCollectResponse findNearArchives(User author, double currentX, double currentY) {
+        var archives = archiveRepository.findNearArchives(currentX, currentY);
+        return ArchiveCollectResponse.builder()
+                .collect(archives.stream().map(ArchiveResponse::fromEntity).toList())
+                .meta(PaginateResponse.builder().count(archives.size()).build())
+                .build();
     }
 
     private Point generateLocation(double x, double y) {

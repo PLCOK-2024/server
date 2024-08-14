@@ -1,6 +1,7 @@
 package com.example.demo.archive;
 
 import com.example.demo.AcceptanceTest;
+import com.example.demo.archive.dto.ArchiveCollectResponse;
 import com.example.demo.archive.dto.ArchiveResponse;
 import com.example.demo.common.storage.IStorageManager;
 import com.example.demo.user.UserFixture;
@@ -51,8 +52,7 @@ public class ArchiveAcceptanceTest extends AcceptanceTest {
         ArchiveResponse outsideRadius = ArchiveSteps.createArchive(token, ArchiveFixture.outsideRadiusCreateArchiveRequest());
 
         // when
-        // 37.5071, 127.0907
-        List<ArchiveResponse> archives = ArchiveSteps.findNearArchives(token, 37.5071, 127.0907);
+        List<ArchiveResponse> archives = ArchiveSteps.findNearArchives(token, 37.5071, 127.0907).getCollect();
 
         // then
         assertThat(archives.size()).isEqualTo(2);

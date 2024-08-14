@@ -1,5 +1,6 @@
 package com.example.demo.archive;
 
+import com.example.demo.archive.dto.ArchiveCollectResponse;
 import com.example.demo.archive.dto.ArchiveResponse;
 import com.example.demo.archive.dto.CreateArchiveRequest;
 import com.example.demo.util.MockMultipartFileFixture;
@@ -26,14 +27,16 @@ public class ArchiveSteps {
                 .extract().as(ArchiveResponse.class);
     }
 
-    public static List<ArchiveResponse> findNearArchives(String token, double x, double y) {
+    public static ArchiveCollectResponse findNearArchives(String token, double x, double y) {
         return RestAssured
                 .given().log().all()
                 .when()
                 .auth().oauth2(token)
-                .get("/api/archives/{x}/{y}", x, y)
+                .queryParam("x", x)
+                .queryParam("y", y)
+                .get("/api/archives")
                 .then().log().all()
                 .statusCode(200)
-                .extract().body().jsonPath().getList(".", ArchiveResponse.class);
+                .extract().as(ArchiveCollectResponse.class);
     }
 }
