@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.repository.query.Param;
 
 public interface BlockRepository extends JpaRepository<Block, Long> {
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Transactional
     int deleteByAuthorAndBlock(@Param("author") User author, @Param("block") User block);
 }
