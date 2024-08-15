@@ -3,7 +3,6 @@ package com.plcok.user.service;
 import com.plcok.common.oauth.OAuth2Attributes;
 import com.plcok.common.oauth.OAuthRequestBodyFactory;
 import com.plcok.user.entity.UserProvider;
-import com.example.demo.common.oauth.*;
 import com.plcok.common.security.JwtUtil;
 import com.plcok.user.entity.User;
 import com.plcok.user.dto.SocialLoginResponse;
@@ -49,7 +48,7 @@ public class AuthUserServiceImpl implements AuthUserService {
     }
 
     private User findOrCreateUser(OAuth2Attributes attributes) {
-        return userProviderRepository.findByProviderTypeAndProviderUserId(attributes.getProviderType(), attributes.getProviderUserId())
+        return userProviderRepository.findByProviderTypeAndProviderUserId(attributes.getProviderType().name(), attributes.getProviderUserId())
                 .map(UserProvider::getUser)
                 .orElseGet(() -> createUser(attributes));
     }

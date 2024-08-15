@@ -38,7 +38,7 @@ public class UserProvider extends BaseEntity {
     @Column(name = "provider_user_id", nullable = false, length = 100)
     private String providerUserId;
 
-    public static UserProvider of(String providerType, User user, String providerUserId) {
+    public static UserProvider of(ProviderType providerType, User user, String providerUserId) {
         return builder()
                 .providerType(providerType)
                 .user(user)

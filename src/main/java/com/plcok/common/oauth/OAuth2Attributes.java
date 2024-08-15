@@ -1,5 +1,6 @@
 package com.plcok.common.oauth;
 
+import com.plcok.user.entity.enumerated.ProviderType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +16,7 @@ public class OAuth2Attributes {
 
     private String email;
 
-    private String providerType;
+    private ProviderType providerType;
 
     private String providerUserId;
 
@@ -26,7 +27,7 @@ public class OAuth2Attributes {
 
         return builder()
 //                .email(email)
-                .providerType("Kakao")
+                .providerType(ProviderType.KAKAO)
                 .providerUserId(providerUserId)
                 .build();
     }
@@ -37,7 +38,7 @@ public class OAuth2Attributes {
 
         return builder()
                 .email(email)
-                .providerType("Google")
+                .providerType(ProviderType.GOOGLE)
                 .providerUserId(providerUserId)
                 .build();
     }
