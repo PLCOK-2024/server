@@ -1,8 +1,8 @@
 package com.example.demo.archive;
 
-import com.example.demo.archive.dto.ArchiveCollectResponse;
-import com.example.demo.archive.dto.ArchiveResponse;
-import com.example.demo.archive.dto.CreateArchiveRequest;
+import com.plcok.archive.dto.ArchiveCollectResponse;
+import com.plcok.archive.dto.ArchiveResponse;
+import com.plcok.archive.dto.CreateArchiveRequest;
 import com.example.demo.util.MockMultipartFileFixture;
 import io.restassured.RestAssured;
 import io.restassured.builder.MultiPartSpecBuilder;
@@ -10,7 +10,6 @@ import io.restassured.http.ContentType;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 public class ArchiveSteps {
     public static ArchiveResponse createArchive(String token, CreateArchiveRequest request) throws IOException {

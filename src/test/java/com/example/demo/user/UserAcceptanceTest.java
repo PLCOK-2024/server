@@ -1,7 +1,7 @@
 package com.example.demo.user;
 
 import com.example.demo.AcceptanceTest;
-import com.example.demo.user.dto.TokenResponse;
+import com.plcok.user.dto.TokenResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

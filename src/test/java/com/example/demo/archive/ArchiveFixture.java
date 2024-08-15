@@ -1,8 +1,6 @@
 package com.example.demo.archive;
 
-import com.example.demo.archive.dto.CreateArchiveRequest;
-
-import java.math.BigDecimal;
+import com.plcok.archive.dto.CreateArchiveRequest;
 
 public class ArchiveFixture {
 

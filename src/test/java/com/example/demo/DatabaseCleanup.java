@@ -1,6 +1,6 @@
 package com.example.demo;
 
-import com.example.demo.common.extension.StringExtension;
+import com.plcok.common.extension.StringExtension;
 import jakarta.persistence.*;
 import jakarta.persistence.metamodel.EntityType;
 import lombok.experimental.ExtensionMethod;

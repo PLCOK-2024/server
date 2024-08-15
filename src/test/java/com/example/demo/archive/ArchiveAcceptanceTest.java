@@ -1,9 +1,8 @@
 package com.example.demo.archive;
 
 import com.example.demo.AcceptanceTest;
-import com.example.demo.archive.dto.ArchiveCollectResponse;
-import com.example.demo.archive.dto.ArchiveResponse;
-import com.example.demo.common.storage.IStorageManager;
+import com.plcok.archive.dto.ArchiveResponse;
+import com.plcok.common.storage.IStorageManager;
 import com.example.demo.user.UserFixture;
 import com.example.demo.user.UserSteps;
 import org.junit.jupiter.api.BeforeEach;
