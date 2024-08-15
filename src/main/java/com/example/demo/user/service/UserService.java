@@ -23,7 +23,6 @@ public class UserService {
             throw new BusinessException(ErrorCode.EMAIL_DUPLICATION);
         }
         User user = request.toEntity();
-        user.setRole(RoleType.USER);
         return userRepository.save(user).getId();
     }
 

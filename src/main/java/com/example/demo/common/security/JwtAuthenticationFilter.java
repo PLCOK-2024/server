@@ -1,5 +1,6 @@
 package com.example.demo.common.security;
 
+import com.example.demo.common.error.ErrorCode;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,5 +1,6 @@
 package com.example.demo.common.security;
 
+import com.example.demo.user.domain.RoleType;
 import com.example.demo.user.domain.User;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
@@ -33,11 +34,12 @@ public class JwtUtil {
     // secretKey 객체 초기화, Base64로 인코딩
     @PostConstruct
     protected void init() {
-        parser = Jwts.parser().setSigningKey(secretKey);
+        parser = Jwts.parser().setSigningKey(secretKey.getBytes());
     }
 
-    public String createToken(Long id, LocalDateTime createdAt) {
+    public String createToken(Long id, RoleType role, LocalDateTime createdAt) {
         Claims claims = Jwts.claims().setSubject(String.valueOf(id));
+        claims.put("role", role.name());
         claims.put("createdAt", String.valueOf(createdAt));
         ZonedDateTime now = ZonedDateTime.now();
         ZonedDateTime tokenValidity = now.plusSeconds(accessTokenValidTime);
@@ -53,8 +55,9 @@ public class JwtUtil {
         var claims = parser.parseClaimsJws(token).getBody();
         var user = User.builder()
                 .id(Long.parseLong(claims.getSubject()))
+                .role(RoleType.valueOf(claims.get("role").toString()))
                 .build();
-        return new UsernamePasswordAuthenticationToken(user, "", user.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(user , "", user.getAuthorities());
     }
 
     public Authentication getAuthentication(HttpServletRequest request) {
