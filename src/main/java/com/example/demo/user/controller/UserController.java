@@ -1,6 +1,7 @@
 package com.example.demo.user.controller;
 
 import com.example.demo.common.argumenthandler.Entity;
+import com.example.demo.common.service.ReportService;
 import com.example.demo.user.service.UserService;
 import com.example.demo.user.domain.User;
 import com.example.demo.user.dto.SignupRequest;
@@ -21,6 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "회원 API")
 public class UserController {
     private final UserService userService;
+    private final ReportService reportService;
 
     @Operation(summary = "회원가입")
     @PostMapping
@@ -42,5 +44,17 @@ public class UserController {
     public ResponseEntity<String> authenticationTest(@AuthenticationPrincipal(errorOnInvalidType = true) User user) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(user.getEmail());
+    }
+
+    @Operation(summary = "신고")
+    @ApiResponse(responseCode = "204")
+    @PostMapping("{userId}/report")
+    public ResponseEntity<?> report(
+            @PathVariable(name = "userId") long ignoredUserId,
+            @Entity(name = "userId") User user,
+            @AuthenticationPrincipal(errorOnInvalidType = true) User author
+    ) {
+        reportService.report(author, user);
+        return ResponseEntity.noContent().build();
     }
 }
