@@ -1,15 +1,12 @@
 package com.example.demo.archive.dto;
 
 import com.example.demo.common.entity.Archive;
-import com.example.demo.common.entity.ArchiveAttach;
 import com.example.demo.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Builder
@@ -32,6 +29,8 @@ public class ArchiveResponse {
 
     private List<AttachResponse> archiveAttaches;
 
+    private List<ArchiveTagResponse> tags;
+
     public static ArchiveResponse fromEntity(Archive archive) {
         return builder()
                 .id(archive.getId())
@@ -42,6 +41,7 @@ public class ArchiveResponse {
                 .content(archive.getContent())
                 .isPublic(archive.getIsPublic())
                 .archiveAttaches(archive.getArchiveAttaches().stream().map(AttachResponse::fromEntity).toList())
+                .tags(archive.getTags().stream().map(ArchiveTagResponse::fromEntity).toList())
                 .build();
     }
 }

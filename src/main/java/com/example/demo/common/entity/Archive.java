@@ -71,8 +71,9 @@ public class Archive extends BaseEntity implements IReportable {
     @OneToMany(mappedBy = "archive")
     private Set<ArchiveReaction> archiveReactions = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "archive")
-    private Set<ArchiveTag> archiveTags = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "archive", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OrderBy("sequence desc")
+    private List<ArchiveTag> tags = new ArrayList<>();
 
     @Override
     public User getUser() {
