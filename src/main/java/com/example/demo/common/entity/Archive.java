@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.locationtech.jts.geom.Point;
 import org.springframework.core.annotation.Order;
 
 import java.math.BigDecimal;
@@ -33,12 +34,16 @@ public class Archive extends BaseEntity implements IReportable {
     private User author;
 
     @NotNull
-    @Column(name = "position_x", nullable = false, precision = 10, scale = 2)
-    private BigDecimal positionX;
+    @Column(columnDefinition = "geometry")
+    private Point location;
 
     @NotNull
-    @Column(name = "position_y", nullable = false, precision = 10, scale = 2)
-    private BigDecimal positionY;
+    @Column(name = "position_x", nullable = false, precision = 10)
+    private Double positionX;
+
+    @NotNull
+    @Column(name = "position_y", nullable = false, precision = 10)
+    private Double positionY;
 
     @Size(max = 200)
     @Column(name = "address", length = 500)

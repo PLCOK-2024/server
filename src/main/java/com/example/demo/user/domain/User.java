@@ -30,6 +30,7 @@ public class User extends BaseEntity implements UserDetails, IReportable {
     @Enumerated(EnumType.STRING)
     @Column(name = "ROLE", nullable = false)
     @Setter
+    @Builder.Default
     private RoleType role = RoleType.USER;
 
     @Override
