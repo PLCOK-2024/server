@@ -1,14 +1,11 @@
 package com.example.demo;
 
-import com.example.demo.user.UserSteps;
-import com.example.demo.user.dto.SignupRequest;
 import io.restassured.RestAssured;
 import io.restassured.config.DecoderConfig;
 import io.restassured.config.EncoderConfig;
 import io.restassured.config.MultiPartConfig;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -18,7 +15,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 @Testcontainers
@@ -42,13 +38,6 @@ public class AcceptanceTest {
                 .decoderConfig(DecoderConfig.decoderConfig().defaultContentCharset("UTF-8"))
                 .multiPartConfig(MultiPartConfig.multiPartConfig().defaultCharset("UTF-8"));
 
-    }
-
-    @Test
-    public void test() {
-        Long userId = UserSteps.signUp(new SignupRequest("email", "password"));
-
-        assertThat(userId).isNotNull();
     }
 
     @BeforeAll

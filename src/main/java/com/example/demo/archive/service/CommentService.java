@@ -5,16 +5,15 @@ import com.example.demo.archive.dto.CommentDetailResponse;
 import com.example.demo.archive.dto.CommentResponse;
 import com.example.demo.archive.dto.CreateCommentRequest;
 import com.example.demo.archive.repository.ArchiveCommentRepository;
+import com.example.demo.archive.repository.ReportRepository;
 import com.example.demo.common.dto.PaginateResponse;
 import com.example.demo.common.entity.Archive;
 import com.example.demo.common.entity.ArchiveComment;
-import com.example.demo.common.error.EntityNotFoundException;
-import com.example.demo.common.error.ErrorCode;
+import com.example.demo.common.entity.Report;
+import com.example.demo.common.entity.enumerated.ResourceType;
 import com.example.demo.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +39,7 @@ public class CommentService {
                 .build();
     }
 
-    public CommentDetailResponse find(Archive ignoredArchive, ArchiveComment comment) {
+    public CommentDetailResponse find(ArchiveComment comment) {
         return CommentDetailResponse.fromEntity(comment);
     }
 }

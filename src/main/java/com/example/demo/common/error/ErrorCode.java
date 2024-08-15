@@ -21,7 +21,11 @@ public enum ErrorCode {
 
 
     // Auth
-    UNAUTHORIZED(401, "T001", "UNAUTHORIZED");
+    UNAUTHORIZED(401, "T001", "UNAUTHORIZED"),
+
+
+    // OAuth
+    PROVIDER_NOT_VALID(404, "O001", "this provider is not valid");
 
 
     private final int status;

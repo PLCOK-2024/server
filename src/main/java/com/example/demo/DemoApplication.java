@@ -1,6 +1,5 @@
 package com.example.demo;
 
-import com.example.demo.common.argumenthandler.Auth;
 import com.example.demo.common.argumenthandler.Entity;
 import org.springdoc.core.utils.SpringDocUtils;
 import org.springframework.boot.SpringApplication;
@@ -17,7 +16,6 @@ public class DemoApplication {
 
     static {
         SpringDocUtils.getConfig()
-                .addAnnotationsToIgnore(Auth.class)
                 .addAnnotationsToIgnore(Entity.class);
     }
 

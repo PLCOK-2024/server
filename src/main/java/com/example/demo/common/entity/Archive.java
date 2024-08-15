@@ -1,11 +1,13 @@
 package com.example.demo.common.entity;
 
 import com.example.demo.common.BaseEntity;
+import com.example.demo.common.entity.enumerated.ResourceType;
 import com.example.demo.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.locationtech.jts.geom.Point;
 import org.springframework.core.annotation.Order;
 
 import java.math.BigDecimal;
@@ -25,24 +27,23 @@ import java.util.Set;
 })
 @NoArgsConstructor
 @AllArgsConstructor
-public class Archive extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
+public class Archive extends BaseEntity implements IReportable {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
 
     @NotNull
-    @Column(name = "position_x", nullable = false, precision = 10, scale = 2)
-    private BigDecimal positionX;
+    @Column(columnDefinition = "geometry")
+    private Point location;
 
     @NotNull
-    @Column(name = "position_y", nullable = false, precision = 10, scale = 2)
-    private BigDecimal positionY;
+    @Column(name = "position_x", nullable = false, precision = 10)
+    private Double positionX;
+
+    @NotNull
+    @Column(name = "position_y", nullable = false, precision = 10)
+    private Double positionY;
 
     @Size(max = 200)
     @Column(name = "address", length = 500)
@@ -74,4 +75,13 @@ public class Archive extends BaseEntity {
     @OrderBy("sequence desc")
     private List<ArchiveTag> tags = new ArrayList<>();
 
+    @Override
+    public User getUser() {
+        return author;
+    }
+
+    @Override
+    public ResourceType getResourceType() {
+        return ResourceType.ARCHIVE;
+    }
 }

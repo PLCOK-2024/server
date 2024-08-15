@@ -15,9 +15,9 @@ public class ArchiveResponse {
 
     private User author;
 
-    private BigDecimal positionX;
+    private Double positionX;
 
-    private BigDecimal positionY;
+    private Double positionY;
 
     private String address;
 
