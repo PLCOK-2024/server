@@ -45,7 +45,7 @@ public class ArchiveController {
 
     @GetMapping
     public ResponseEntity<ArchiveCollectResponse> findNearArchives(
-            @Auth User user,
+            @AuthenticationPrincipal User user,
             @RequestParam(value = "x") double currentX,
             @RequestParam(value = "y") double currentY
     ) {
