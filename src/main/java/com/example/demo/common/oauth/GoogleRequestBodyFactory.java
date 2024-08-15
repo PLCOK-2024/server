@@ -2,8 +2,9 @@ package com.example.demo.common.oauth;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import java.util.Map;
 
 @Component("Google")
 public class GoogleRequestBodyFactory implements OAuthRequestBodyFactory {
@@ -19,17 +20,21 @@ public class GoogleRequestBodyFactory implements OAuthRequestBodyFactory {
 
     @Override
     public MultiValueMap<String, String> createRequestBody(String code) {
-        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("grant_type", "authorization_code");
-        body.add("client_id", CLIENT_ID);
-        body.add("redirect_uri", REDIRECT_URI);
-        body.add("client_secret", CLIENT_SECRET);
-        body.add("code", code);
-        return body;
+        return createDefaultRequestBody(CLIENT_ID, REDIRECT_URI, CLIENT_SECRET, code);
     }
 
     @Override
     public String getRequestUrl() {
         return "https://www.googleapis.com/oauth2/v4/token";
+    }
+
+    @Override
+    public String getUserInfoRequestUrl() {
+        return "https://www.googleapis.com/oauth2/v2/userinfo";
+    }
+
+    @Override
+    public OAuth2Attributes createOauthAttribute(Map<String, Object> map) {
+        return OAuth2Attributes.ofGoogle(map);
     }
 }

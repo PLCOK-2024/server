@@ -1,12 +1,9 @@
 package com.example.demo.user.service;
 
-import com.example.demo.common.error.BusinessException;
-import com.example.demo.common.error.ErrorCode;
 import com.example.demo.common.oauth.*;
 import com.example.demo.common.security.JwtUtil;
 import com.example.demo.user.domain.User;
 import com.example.demo.user.domain.UserProvider;
-import com.example.demo.user.dto.SocialLoginRequest;
 import com.example.demo.user.dto.SocialLoginResponse;
 import com.example.demo.user.repository.UserProviderRepository;
 import com.example.demo.user.repository.UserRepository;
@@ -26,7 +23,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,16 +35,11 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     private final UserProviderRepository userProviderRepository;
 
-    private final OAuthRequestBodyFactoryProvider oAuthRequestBodyFactoryProvider;
-
     @Override
     @Transactional
-    public SocialLoginResponse login(SocialLoginRequest requestDto) {
-        String providerType = requestDto.getProviderType();
-        String token = requestDto.getAccessToken();
-
-        Map<String, Object> map = getUserAttributes(providerType, token);
-        OAuth2Attributes attributes = OAuth2Attributes.of(providerType, map);
+    public SocialLoginResponse login(String token, OAuthRequestBodyFactory factory) {
+        Map<String, Object> map = getUserAttributes(factory, token);
+        OAuth2Attributes attributes = factory.createOauthAttribute(map);
 
         User user = findOrCreateUser(attributes);
         return SocialLoginResponse
@@ -69,13 +60,13 @@ public class AuthUserServiceImpl implements AuthUserService {
         return user;
     }
 
-    private Map<String, Object> getUserAttributes(String providerType, String token) {
+    private Map<String, Object> getUserAttributes(OAuthRequestBodyFactory factory, String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(headers);
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate
-                .exchange(getRequestUrl(providerType), HttpMethod.GET, request, String.class);
+                .exchange(factory.getUserInfoRequestUrl(), HttpMethod.GET, request, String.class);
         return parseResponseBody(response.getBody());
     }
 
@@ -87,22 +78,12 @@ public class AuthUserServiceImpl implements AuthUserService {
         }
     }
 
-    private String getRequestUrl(String providerType) {
-        if ("Kakao".equals(providerType)) {
-            return "https://kapi.kakao.com/v2/user/me";
-        } else {
-            return "https://www.googleapis.com/oauth2/v2/userinfo";
-        }
-    }
-
     @Override
     @Transactional(readOnly = true)
-    public String getToken(String code, String providerType) throws JsonProcessingException {
+    public String getToken(String code, OAuthRequestBodyFactory factory) throws JsonProcessingException {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-
-        OAuthRequestBodyFactory factory = oAuthRequestBodyFactoryProvider.getFactory(providerType);
 
         // HTTP Body 생성
         MultiValueMap<String, String> body = factory.createRequestBody(code);
