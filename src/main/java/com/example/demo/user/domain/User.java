@@ -29,6 +29,10 @@ public class User extends BaseEntity implements UserDetails, IReportable {
 
     private String password;
 
+    private String profileImage;
+
+    private String description;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "ROLE", nullable = false)
     @Setter

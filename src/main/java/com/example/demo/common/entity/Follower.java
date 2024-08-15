@@ -4,16 +4,18 @@ import com.example.demo.common.BaseEntity;
 import com.example.demo.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "followers")
+@Builder
 @AttributeOverrides({
         @AttributeOverride(name = "createdAt", column = @Column(name = "created_at", nullable = false))
 })
+@NoArgsConstructor
+@AllArgsConstructor
 public class Follower extends BaseEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -24,5 +26,4 @@ public class Follower extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "follow_id", nullable = false)
     private User follow;
-
 }

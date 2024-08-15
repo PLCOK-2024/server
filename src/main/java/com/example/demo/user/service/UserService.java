@@ -33,4 +33,8 @@ public class UserService {
 
         return UserDetailResponse.from(user);
     }
+
+    public UserDetailResponse find(User user) {
+        return UserDetailResponse.from(user);
+    }
 }
