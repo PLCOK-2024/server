@@ -2,8 +2,8 @@ package com.plcok.user.controller;
 
 import com.plcok.common.argumenthandler.Entity;
 import com.plcok.user.entity.User;
-import com.plcok.user.dto.SignupRequest;
-import com.plcok.user.dto.UserDetailResponse;
+import com.plcok.user.dto.request.SignupRequest;
+import com.plcok.user.dto.response.UserDetailResponse;
 import com.plcok.user.service.UserService;
 import com.plcok.user.service.relationship.UserBlockService;
 import com.plcok.user.service.relationship.UserFollowService;

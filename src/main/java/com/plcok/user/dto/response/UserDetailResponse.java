@@ -1,4 +1,4 @@
-package com.plcok.user.dto;
+package com.plcok.user.dto.response;
 
 import com.plcok.user.entity.User;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.plcok.user.dto;
+package com.plcok.user.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,11 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SocialLoginResponse {
-
+public class TokenResponse {
     private String accessToken;
-
-    public static SocialLoginResponse from(String accessToken) {
-        return builder().accessToken(accessToken).build();
-    }
 }

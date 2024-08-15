@@ -1,8 +1,8 @@
 package com.plcok.user.service;
 
 import com.plcok.user.entity.User;
-import com.plcok.user.dto.SignupRequest;
-import com.plcok.user.dto.UserDetailResponse;
+import com.plcok.user.dto.request.SignupRequest;
+import com.plcok.user.dto.response.UserDetailResponse;
 import com.plcok.common.error.BusinessException;
 import com.plcok.common.error.EntityNotFoundException;
 import com.plcok.common.error.ErrorCode;

@@ -2,6 +2,7 @@ package com.plcok.archive.entity;
 
 import com.plcok.common.BaseEntity;
 import com.plcok.common.entity.IReportable;
+import com.plcok.user.entity.Folder;
 import com.plcok.user.entity.User;
 import com.plcok.common.entity.enumerated.ResourceType;
 import jakarta.persistence.*;
@@ -31,6 +32,10 @@ public class Archive extends BaseEntity implements IReportable {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "folder_id")
+    private Folder folder;
 
     @NotNull
     @Column(columnDefinition = "geometry")
