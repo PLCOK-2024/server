@@ -13,10 +13,6 @@ public class SocialLoginResponse {
 
     private String accessToken;
 
-    private String providerType;
-
-    private String providerUserId;
-
     public static SocialLoginResponse from(String accessToken) {
         return builder().accessToken(accessToken).build();
     }
