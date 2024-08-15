@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -41,9 +42,8 @@ public class UserController {
     }
 
     @GetMapping("/userInfo")
-    public ResponseEntity<String> authenticationTest(@AuthenticationPrincipal(errorOnInvalidType = true) User user) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(user.getEmail());
+    public ResponseEntity<Long> authenticationTest(@AuthenticationPrincipal(errorOnInvalidType = true) User user) {
+        return ResponseEntity.status(HttpStatus.OK).body(user.getId());
     }
 
     @Operation(summary = "신고")

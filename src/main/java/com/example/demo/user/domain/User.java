@@ -5,6 +5,8 @@ import com.example.demo.common.entity.IReportable;
 import com.example.demo.common.entity.enumerated.ResourceType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
