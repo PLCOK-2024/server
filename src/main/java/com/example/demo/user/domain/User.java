@@ -1,10 +1,13 @@
 package com.example.demo.user.domain;
 
 import com.example.demo.common.BaseEntity;
+import com.example.demo.common.entity.IReportable;
+import com.example.demo.common.entity.enumerated.ResourceType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,14 +21,10 @@ import static java.util.stream.Collectors.toList;
 @Entity
 @Table(name = "users")
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends BaseEntity implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class User extends BaseEntity implements UserDetails, IReportable {
     private String email;
 
     private String password;
@@ -33,12 +32,13 @@ public class User extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "ROLE", nullable = false)
     @Setter
+    @Builder.Default
     private RoleType role = RoleType.USER;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<String> roles = new ArrayList<>();
-        roles.add("ROLE_" + getRole().toString());
+        roles.add("ROLE_" + getRole());
 
         return roles.stream()
                 .map(SimpleGrantedAuthority::new)
@@ -48,5 +48,15 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public String getUsername() {
         return null;
+    }
+
+    @Override
+    public User getUser() {
+        return this;
+    }
+
+    @Override
+    public ResourceType getResourceType() {
+        return ResourceType.USER;
     }
 }

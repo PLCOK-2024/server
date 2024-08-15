@@ -12,11 +12,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "archive_tags")
 public class ArchiveTag extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "archive_id", nullable = false)

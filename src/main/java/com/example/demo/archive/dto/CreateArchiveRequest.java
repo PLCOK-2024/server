@@ -15,11 +15,11 @@ import java.math.BigDecimal;
 public class CreateArchiveRequest {
     @JsonProperty("position_x")
     @NotNull
-    private BigDecimal positionX;
+    private double positionX;
 
     @JsonProperty("position_y")
     @NotNull
-    private BigDecimal positionY;
+    private double positionY;
 
     @Size(max = 200)
     @NotNull

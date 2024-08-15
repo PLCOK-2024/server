@@ -34,7 +34,7 @@ public class JwtUtil {
     // secretKey 객체 초기화, Base64로 인코딩
     @PostConstruct
     protected void init() {
-        parser = Jwts.parser().setSigningKey(secretKey);
+        parser = Jwts.parser().setSigningKey(secretKey.getBytes());
     }
 
     public String createToken(Long id, RoleType role, LocalDateTime createdAt) {
