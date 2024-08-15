@@ -1,7 +1,5 @@
 package com.example.demo.archive.service;
 
-import com.example.demo.archive.dto.CommentCollectResponse;
-import com.example.demo.archive.dto.CommentResponse;
 import com.example.demo.archive.dto.TagCollectResponse;
 import com.example.demo.archive.dto.TagResponse;
 import com.example.demo.archive.repository.TagRepository;
@@ -41,7 +39,10 @@ public class TagService {
         } else {
             tags = repository.findByNameContainingOrderByCountDesc(q, Limit.of(limit));
             // 정확히 일치하는 태그는 최상단으로 이동
-            tags.add(0, tags.removeFirst(o -> o.getName().equals(q)));
+            var eq = tags.removeFirst(o -> o.getName().equals(q));
+            if (eq != null) {
+                tags.add(0, tags.removeFirst(o -> o.getName().equals(q)));
+            }
         }
 
         return TagCollectResponse.builder()
