@@ -1,6 +1,8 @@
 package com.plcok.user.controller;
 
 import com.plcok.common.argumenthandler.Entity;
+import com.plcok.user.dto.UserCollectResponse;
+import com.plcok.user.dto.UserRetrieveRequest;
 import com.plcok.user.entity.User;
 import com.plcok.user.dto.request.SignupRequest;
 import com.plcok.user.dto.response.UserDetailResponse;
@@ -29,6 +31,7 @@ public class UserController {
     private final UserBlockService userBlockService;
     private final UserFollowService userFollowService;
 
+    @Deprecated
     @Operation(summary = "회원가입")
     @PostMapping
     @ApiResponse(responseCode = "201")
@@ -37,26 +40,38 @@ public class UserController {
                 .body(userService.signUp(request));
     }
 
+    //region 조회
+    @Operation(summary = "회원 검색")
+    @GetMapping()
+    public ResponseEntity<UserCollectResponse> get(
+            @AuthenticationPrincipal User user,
+            @ModelAttribute UserRetrieveRequest request
+    ) {
+        return ResponseEntity.ok(userService.get(user, request));
+    }
+
     @Operation(summary = "로그인된 회원 조회")
     @GetMapping("/@me")
-    public ResponseEntity<UserDetailResponse> getLoginUserDetail(
+    public ResponseEntity<UserResponse> me(
             @AuthenticationPrincipal(errorOnInvalidType = true) User user
     ) {
-        return ResponseEntity.ok(userService.find(user));
+        return ResponseEntity.ok(userService.find(user, true));
     }
 
     @Operation(summary = "회원 상세 조회")
     @GetMapping("/{userId}")
-    public ResponseEntity<UserDetailResponse> getUserDetail(
+    public ResponseEntity<UserResponse> getUserDetail(
             @PathVariable(name = "userId") long ignoredUserId,
             @Entity(name = "userId") User user
     ) {
         return ResponseEntity.ok(userService.find(user));
     }
+    //endregion
 
+    //region 차단
     @Operation(summary = "회원 차단")
     @PostMapping("/{userId}/block")
-    public ResponseEntity<UserDetailResponse> block(
+    public ResponseEntity<UserResponse> block(
             @PathVariable(name = "userId") long ignoredUserId,
             @Entity(name = "userId") User user,
             @AuthenticationPrincipal(errorOnInvalidType = true) User author
@@ -67,7 +82,7 @@ public class UserController {
 
     @Operation(summary = "회원 차단해제")
     @PostMapping("/{userId}/unblock")
-    public ResponseEntity<UserDetailResponse> unblock(
+    public ResponseEntity<UserResponse> unblock(
             @PathVariable(name = "userId") long ignoredUserId,
             @Entity(name = "userId") User user,
             @AuthenticationPrincipal(errorOnInvalidType = true) User author
@@ -75,10 +90,12 @@ public class UserController {
         userBlockService.unlink(author, user);
         return ResponseEntity.noContent().build();
     }
+    //endregion
 
+    //region 팔로우
     @Operation(summary = "회원 팔로우")
     @PostMapping("/{userId}/follow")
-    public ResponseEntity<UserDetailResponse> follow(
+    public ResponseEntity<UserResponse> follow(
             @PathVariable(name = "userId") long ignoredUserId,
             @Entity(name = "userId") User user,
             @AuthenticationPrincipal(errorOnInvalidType = true) User author
@@ -89,7 +106,7 @@ public class UserController {
 
     @Operation(summary = "회원 팔로우 해제")
     @PostMapping("/{userId}/unfollow")
-    public ResponseEntity<UserDetailResponse> unfollow(
+    public ResponseEntity<UserResponse> unfollow(
             @PathVariable(name = "userId") long ignoredUserId,
             @Entity(name = "userId") User user,
             @AuthenticationPrincipal(errorOnInvalidType = true) User author
@@ -97,11 +114,7 @@ public class UserController {
         userFollowService.unlink(author, user);
         return ResponseEntity.noContent().build();
     }
-
-    @GetMapping("/userInfo")
-    public ResponseEntity<Long> authenticationTest(@AuthenticationPrincipal(errorOnInvalidType = true) User user) {
-        return ResponseEntity.status(HttpStatus.OK).body(user.getId());
-    }
+    //endregion
 
     @Operation(summary = "신고")
     @ApiResponse(responseCode = "204")
