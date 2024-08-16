@@ -1,4 +1,4 @@
-package com.plcok.user.dto;
+package com.plcok.user.dto.request;
 import com.plcok.common.rule.Regex;
 import com.plcok.user.entity.User;
 import lombok.AllArgsConstructor;

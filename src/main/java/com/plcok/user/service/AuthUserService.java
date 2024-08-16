@@ -1,7 +1,7 @@
 package com.plcok.user.service;
 
 import com.plcok.common.oauth.OAuthRequestBodyFactory;
-import com.plcok.user.dto.SocialLoginResponse;
+import com.plcok.user.dto.response.SocialLoginResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface AuthUserService {

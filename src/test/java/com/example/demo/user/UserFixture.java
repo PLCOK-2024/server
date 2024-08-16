@@ -1,7 +1,7 @@
 package com.example.demo.user;
 
-import com.plcok.user.dto.LoginRequest;
-import com.plcok.user.dto.SignupRequest;
+import com.plcok.user.dto.request.LoginRequest;
+import com.plcok.user.dto.request.SignupRequest;
 
 public class UserFixture {
     public static final String DEFAULT_EMAIL = "vegielcl@gmail.com";

@@ -1,8 +1,8 @@
 package com.example.demo.user;
 
-import com.plcok.user.dto.LoginRequest;
-import com.plcok.user.dto.SignupRequest;
-import com.plcok.user.dto.TokenResponse;
+import com.plcok.user.dto.request.LoginRequest;
+import com.plcok.user.dto.request.SignupRequest;
+import com.plcok.user.dto.response.TokenResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
