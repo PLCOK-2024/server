@@ -1,4 +1,4 @@
-package com.plcok.user.dto;
+package com.plcok.user.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

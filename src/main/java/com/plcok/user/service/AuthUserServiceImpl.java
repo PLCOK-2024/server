@@ -5,7 +5,7 @@ import com.plcok.common.oauth.OAuthRequestBodyFactory;
 import com.plcok.user.entity.UserProvider;
 import com.plcok.common.security.JwtUtil;
 import com.plcok.user.entity.User;
-import com.plcok.user.dto.SocialLoginResponse;
+import com.plcok.user.dto.response.SocialLoginResponse;
 import com.plcok.user.repository.UserProviderRepository;
 import com.plcok.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -48,7 +48,7 @@ public class AuthUserServiceImpl implements AuthUserService {
     }
 
     private User findOrCreateUser(OAuth2Attributes attributes) {
-        return userProviderRepository.findByProviderTypeAndProviderUserId(attributes.getProviderType().name(), attributes.getProviderUserId())
+        return userProviderRepository.findByProviderTypeAndProviderUserId(attributes.getProviderType(), attributes.getProviderUserId())
                 .map(UserProvider::getUser)
                 .orElseGet(() -> createUser(attributes));
     }

@@ -1,7 +1,7 @@
 package com.plcok.user.controller;
 
-import com.plcok.user.dto.SocialLoginRequest;
-import com.plcok.user.dto.SocialLoginResponse;
+import com.plcok.user.dto.request.SocialLoginRequest;
+import com.plcok.user.dto.response.SocialLoginResponse;
 import com.plcok.user.service.AuthUserService;
 import com.plcok.common.oauth.GoogleRequestBodyFactory;
 import com.plcok.common.oauth.KakaoRequestBodyFactory;

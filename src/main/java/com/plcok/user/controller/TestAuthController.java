@@ -1,8 +1,8 @@
 package com.plcok.user.controller;
 
-import com.plcok.user.dto.LoginRequest;
-import com.plcok.user.dto.SignupRequest;
-import com.plcok.user.dto.TokenResponse;
+import com.plcok.user.dto.request.LoginRequest;
+import com.plcok.user.dto.request.SignupRequest;
+import com.plcok.user.dto.response.TokenResponse;
 import com.plcok.user.service.TestAuthService;
 import com.plcok.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;

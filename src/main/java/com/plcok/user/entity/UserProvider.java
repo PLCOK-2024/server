@@ -18,10 +18,6 @@ import lombok.*;
         @AttributeOverride(name = "createdAt", column = @Column(name = "created_at", nullable = false))
 })
 public class UserProvider extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
 
     @NotNull
     @Column(name = "provider_type", nullable = false)
