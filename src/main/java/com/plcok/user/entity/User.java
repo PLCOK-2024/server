@@ -25,6 +25,8 @@ import static java.util.stream.Collectors.toList;
 public class User extends BaseEntity implements UserDetails, IReportable {
     private String email;
 
+    private String name;
+
     private String password;
 
     private String profileImage;
