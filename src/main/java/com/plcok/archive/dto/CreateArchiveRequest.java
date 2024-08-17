@@ -1,7 +1,6 @@
 package com.plcok.archive.dto;
 
 import com.plcok.common.rule.UniqueElementsBy;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -15,11 +14,9 @@ import java.util.List;
 @Builder
 @Setter
 public class CreateArchiveRequest {
-    @JsonProperty("position_x")
     @NotNull
     private double positionX;
 
-    @JsonProperty("position_y")
     @NotNull
     private double positionY;
 
@@ -35,10 +32,10 @@ public class CreateArchiveRequest {
     @NotNull
     private String content;
 
-    @JsonProperty("is_public")
     private boolean isPublic = true;
 
     @Size(max = 10)
     @UniqueElementsBy
+    @Builder.Default
     private List<TagRequest> tags = new ArrayList<>();
 }

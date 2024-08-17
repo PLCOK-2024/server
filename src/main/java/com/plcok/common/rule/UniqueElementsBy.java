@@ -27,6 +27,7 @@ class UniqueElementsByValidator implements ConstraintValidator<UniqueElementsBy,
 
     @Override
     public boolean isValid(List<? extends UniqueByAble> list, ConstraintValidatorContext constraintValidatorContext) {
+        if (list == null) return true;
         var distinct = list.stream().map(UniqueByAble::getUniqueKey).collect(Collectors.toSet());
         return distinct.size() == list.size();
     }

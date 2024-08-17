@@ -36,8 +36,8 @@ public class ArchiveController {
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ArchiveResponse> create(
             @AuthenticationPrincipal(errorOnInvalidType = true) User author,
-            @RequestPart(value = "request") @Valid CreateArchiveRequest request,
-            @RequestPart(required = false) List<MultipartFile> attaches
+            @RequestPart(value = "request", name = "request") @Valid CreateArchiveRequest request,
+            @RequestPart(required = false, name = "attaches") List<MultipartFile> attaches
     ) throws IOException {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(service.create(author, request ,attaches));
