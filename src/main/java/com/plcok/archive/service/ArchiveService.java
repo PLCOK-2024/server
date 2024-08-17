@@ -13,6 +13,8 @@ import com.plcok.common.storage.IStorageManager;
 import com.plcok.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.ExtensionMethod;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
@@ -31,6 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ArchiveService {
     private final IStorageManager storageManager;
     private final ArchiveRepository archiveRepository;
+    private final GeometryFactory geometryFactory;
 
     @Transactional(rollbackFor = IOException.class)
     public ArchiveResponse create(User author, CreateArchiveRequest request, List<MultipartFile> attaches) throws IOException {
@@ -94,13 +97,14 @@ public class ArchiveService {
     }
 
     private Point generateLocation(double x, double y) {
-        String pointWKT = String.format("POINT(%s %s)", y, x);
-        Point location = null;
-        try {
-            location = (Point) new WKTReader().read(pointWKT);
-        } catch (ParseException ex) {
-            return null;
-        }
-        return location;
+        return geometryFactory.createPoint(new Coordinate(y, x));
+//        String pointWKT = String.format("POINT(%s %s)", y, x);
+//        Point location = null;
+//        try {
+//            location = (Point) new WKTReader().read(pointWKT);
+//        } catch (ParseException ex) {
+//            return null;
+//        }
+//        return location;
     }
 }

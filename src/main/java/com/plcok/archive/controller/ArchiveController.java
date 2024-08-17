@@ -43,6 +43,8 @@ public class ArchiveController {
                 .body(service.create(author, request ,attaches));
     }
 
+    @Operation(summary = "아카이브 조회")
+    @ApiResponse(responseCode = "200")
     @GetMapping
     public ResponseEntity<ArchiveCollectResponse> findNearArchives(
             @AuthenticationPrincipal User user,
