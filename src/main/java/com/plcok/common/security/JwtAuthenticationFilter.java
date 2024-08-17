@@ -29,8 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         try {
             SecurityContextHolder.getContext().setAuthentication(jwtUtil.getAuthentication(request));
-        } catch (JwtException e) {
-            log.error("FAIL JWT DECODE", e);
+        } catch (JwtException ignored) {
         } catch (Exception e) {
             log.error("FAIL JWT DECODE", e);
         } finally {
