@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ArchiveAcceptanceTest extends AcceptanceTest {
+public class ArchiveRetrieveAcceptanceTest extends AcceptanceTest {
     @MockBean
     IStorageManager storageManager;
 
@@ -39,12 +39,12 @@ public class ArchiveAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    public void retrieveSuccess() throws IOException {
+    public void success() throws IOException {
         // given
         mockForCreateArchive();
-        ArchiveSteps.createArchive(token, ArchiveFixture.defaultCreateArchiveRequest());
-        ArchiveResponse songpa = ArchiveSteps.createArchive(token, ArchiveFixture.inSongpaCreateArchiveRequest());
-        ArchiveResponse youngdeungpo = ArchiveSteps.createArchive(token, ArchiveFixture.inYoungdeungpoCreateArchiveRequest());
+        ArchiveSteps.successCreateArchive(token, ArchiveFixture.defaultCreateArchiveRequest());
+        ArchiveResponse songpa = ArchiveSteps.successCreateArchive(token, ArchiveFixture.inSongpaCreateArchiveRequest());
+        ArchiveResponse youngdeungpo = ArchiveSteps.successCreateArchive(token, ArchiveFixture.inYoungdeungpoCreateArchiveRequest());
 
         // when
         List<ArchiveResponse> archives = ArchiveSteps.retrieve(token, ArchiveFixture.defaultRetrieveRequest()).getCollect();
@@ -56,15 +56,17 @@ public class ArchiveAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    public void findNearArchivesWithoutBlockedAuthorSuccess() throws IOException {
+    public void successWithBlock() throws IOException {
         // given
         mockForCreateArchive();
-        ArchiveSteps.createArchive(token, ArchiveFixture.defaultCreateArchiveRequest());
-        ArchiveResponse blockedArchive = ArchiveSteps.createArchive(blockedUserToken, ArchiveFixture.inSongpaCreateArchiveRequest());
+        ArchiveSteps.successCreateArchive(token, ArchiveFixture.defaultCreateArchiveRequest());
+        ArchiveResponse blockedArchive = ArchiveSteps.successCreateArchive(blockedUserToken, ArchiveFixture.inSongpaCreateArchiveRequest());
 
         // when
         UserSteps.block(token, blockedUserId);
-        List<ArchiveResponse> archives = ArchiveSteps.retrieve(token, ArchiveFixture.defaultRetrieveRequest()).getCollect();
+        var request = ArchiveFixture.defaultRetrieveRequest();
+        request.setBlock(false);
+        List<ArchiveResponse> archives = ArchiveSteps.retrieve(token, request).getCollect();
 
         // then
         assertThat(archives.size()).isEqualTo(1);

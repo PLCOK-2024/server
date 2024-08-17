@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@NoArgsConstructor
 public class SignupRequest {
     @Regex(pattern = "^[A-z0-9]+\\@[A-z0-9]+\\.[A-z]+$")
     private String email;
