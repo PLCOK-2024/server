@@ -31,4 +31,15 @@ public class UserSteps {
                 .statusCode(200)
                 .extract().as(TokenResponse.class);
     }
+
+    public static void block(String token, Long userId) {
+        RestAssured
+            .given().log().all()
+            .contentType(ContentType.JSON.withCharset("UTF-8"))
+            .when()
+            .auth().oauth2(token)
+            .post("/api/users/{userId}/block", userId)
+            .then().log().all()
+            .statusCode(204);
+    }
 }

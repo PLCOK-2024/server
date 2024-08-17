@@ -1,51 +1,69 @@
 package com.plcok.archive.repository;
 
-import com.plcok.archive.util.CardinalDirection;
-import com.plcok.archive.util.RadiusCalculator;
+import com.plcok.archive.dto.ArchiveRetrieveRequest;
 import com.plcok.archive.entity.Archive;
+import com.plcok.archive.entity.QArchive;
+import com.plcok.user.entity.QBlock;
+import com.plcok.user.entity.QFollower;
+import com.plcok.user.entity.QUser;
 import com.plcok.user.entity.User;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.util.Pair;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 public class ArchiveRepositoryImpl implements ArchiveRepositoryCustom {
-    private final EntityManager entityManager;
-    private final double DISTANCE = 3;
+    private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Archive> findNearArchives(User author, double baseLatitude, double baseLongitude) {
-        Pair<Double, Double> northEast = RadiusCalculator.calculateByDirection(baseLatitude, baseLongitude, DISTANCE, CardinalDirection.NORTHEAST.getBearing());
-        Pair<Double, Double> southWest = RadiusCalculator.calculateByDirection(baseLatitude, baseLongitude, DISTANCE, CardinalDirection.SOUTHWEST.getBearing());
+    public List<Archive> retrieve(User user, ArchiveRetrieveRequest request) {
+        var query = queryFactory.select(QArchive.archive).from(QArchive.archive);
 
-        double x1 = northEast.getSecond(); // longitude
-        double y1 = northEast.getFirst();  // latitude
-        double x2 = southWest.getSecond(); // longitude
-        double y2 = southWest.getFirst();  // latitude
+        // 위치 검색
+        if (
+                request.getTopLeftLatitude() != null &&
+                request.getTopLeftLongitude() != null &&
+                request.getBottomRightLatitude() != null &&
+                request.getBottomRightLongitude() != null
+        ) {
+            String polygonWKT = String.format("ST_POLYGONFROMTEXT('POLYGON((%f %f, %f %f, %f %f, %f %f, %f %f))')",
+                    request.getBottomRightLongitude(), request.getBottomRightLatitude(),   // southWest
+                    request.getBottomRightLongitude(), request.getTopLeftLatitude(),   // northWest
+                    request.getTopLeftLongitude(), request.getTopLeftLatitude(),   // northEast
+                    request.getTopLeftLongitude(), request.getBottomRightLatitude(),   // southEast
+                    request.getBottomRightLongitude(), request.getBottomRightLatitude());
 
-        String polygonWKT = String.format("POLYGON((%f %f, %f %f, %f %f, %f %f, %f %f))",
-                x2, y2,   // southWest
-                x2, y1,   // northWest
-                x1, y1,   // northEast
-                x1, y2,   // southEast
-                x2, y2);
+            query.where(
+                    Expressions.booleanTemplate(
+                            "MBRContains(" + polygonWKT + ", {0})",
+                            QArchive.archive.location
+                    ).isTrue()
+            );
+        }
 
-        Query query = entityManager.createNativeQuery(
-                "SELECT * \n" +
-                        "FROM archives AS a \n" +
-                        "WHERE MBRContains(ST_POLYGONFROMTEXT('" + polygonWKT + "'), a.location)" +
-                        "AND a.is_public = true \n" +
-                        "AND NOT EXISTS ( \n" +
-                        "   SELECT 1 \n" +
-                        "   FROM blocks AS b \n" +
-                        "   WHERE b.author_id = :authorId AND b.block_id = a.author_id \n" +
-                        ")"
-                , Archive.class
-        ).setParameter("authorId", author.getId());
+        // 작성자 차단
+        if (request.getBlock() != null && user != null) {
+            var subQuery = JPAExpressions.selectFrom(QBlock.block1)
+                    .where(QBlock.block1.author.eq(user))
+                    .where(QBlock.block1.block.eq(QArchive.archive.author));
 
-        return (List<Archive>) query.getResultList();
+            query.where(request.getBlock() ? subQuery.exists() : subQuery.notExists());
+        }
+
+        // 팔로우
+        if (request.getFollow() != null && user != null) {
+            var subQuery = JPAExpressions.selectFrom(QFollower.follower1)
+                    .where(QFollower.follower1.follower.eq(user))
+                    .where(QFollower.follower1.follow.eq(QArchive.archive.author));
+
+            query.where(
+                    request.getFollow() ? subQuery.exists() : subQuery.notExists()
+            );
+        }
+
+        return query.fetch();
     }
 }

@@ -2,6 +2,7 @@ package com.plcok.archive.controller;
 
 import com.plcok.archive.dto.ArchiveCollectResponse;
 import com.plcok.archive.dto.ArchiveResponse;
+import com.plcok.archive.dto.ArchiveRetrieveRequest;
 import com.plcok.archive.dto.CreateArchiveRequest;
 import com.plcok.archive.service.ArchiveService;
 import com.plcok.common.argumenthandler.Entity;
@@ -43,13 +44,14 @@ public class ArchiveController {
                 .body(service.create(author, request ,attaches));
     }
 
+    @Operation(summary = "아카이브 조회")
+    @ApiResponse(responseCode = "200")
     @GetMapping
-    public ResponseEntity<ArchiveCollectResponse> findNearArchives(
+    public ResponseEntity<ArchiveCollectResponse> retrieve(
             @AuthenticationPrincipal User user,
-            @RequestParam(value = "x") double currentX,
-            @RequestParam(value = "y") double currentY
+            @ModelAttribute ArchiveRetrieveRequest request
     ) {
-        return ResponseEntity.ok(service.findNearArchives(user, currentX, currentY));
+        return ResponseEntity.ok(service.retrieve(user, request));
     }
   
     @Operation(summary = "아카이브 신고")

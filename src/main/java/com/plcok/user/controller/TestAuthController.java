@@ -1,5 +1,7 @@
 package com.plcok.user.controller;
 
+import com.plcok.common.error.ErrorCode;
+import com.plcok.common.swagger.ApiExceptionResponse;
 import com.plcok.user.dto.request.LoginRequest;
 import com.plcok.user.dto.request.SignupRequest;
 import com.plcok.user.dto.response.TokenResponse;
@@ -27,6 +29,9 @@ public class TestAuthController {
     @Operation(summary = "테스트 로그인")
     @PostMapping("/testLogin")
     @ApiResponse(responseCode = "200")
+    @ApiExceptionResponse({
+            ErrorCode.ENTITY_NOT_FOUND
+    })
     public ResponseEntity<TokenResponse> testLogin(@RequestBody LoginRequest request) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(authService.testLogin(request));
@@ -35,6 +40,9 @@ public class TestAuthController {
     @Operation(summary = "회원가입")
     @PostMapping("/signUp")
     @ApiResponse(responseCode = "201")
+    @ApiExceptionResponse({
+            ErrorCode.EMAIL_DUPLICATION
+    })
     public ResponseEntity<Long> signUp(@RequestBody @Valid SignupRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(userService.signUp(request));

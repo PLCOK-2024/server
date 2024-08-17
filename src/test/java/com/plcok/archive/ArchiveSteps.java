@@ -2,15 +2,18 @@ package com.plcok.archive;
 
 import com.plcok.archive.dto.ArchiveCollectResponse;
 import com.plcok.archive.dto.ArchiveResponse;
+import com.plcok.archive.dto.ArchiveRetrieveRequest;
 import com.plcok.archive.dto.CreateArchiveRequest;
 import io.restassured.RestAssured;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.http.ContentType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.response.ValidatableResponse;
 import com.plcok.common.error.ErrorResponse;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 public class ArchiveSteps {
 
@@ -43,13 +46,12 @@ public class ArchiveSteps {
                 .extract().as(ErrorResponse.class);
     }
 
-    public static ArchiveCollectResponse findNearArchives(String token, double x, double y) {
+    public static ArchiveCollectResponse retrieve(String token, ArchiveRetrieveRequest request) {
         return RestAssured
                 .given().log().all()
                 .when()
                 .auth().oauth2(token)
-                .queryParam("x", x)
-                .queryParam("y", y)
+                .queryParams(new ObjectMapper().convertValue(request, Map.class))
                 .get("/api/archives")
                 .then().log().all()
                 .statusCode(200)
