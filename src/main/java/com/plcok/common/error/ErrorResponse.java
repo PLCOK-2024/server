@@ -1,15 +1,16 @@
 package com.plcok.common.error;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class ErrorResponse {
     private String message;
     private int status;
@@ -42,32 +43,27 @@ public class ErrorResponse {
     }
 
     @Getter
+    @AllArgsConstructor
     @NoArgsConstructor
     public static class FieldError {
         private String field;
         private String value;
         private String reason;
+        private String code;
 
-        private FieldError(String field, String value, String reason) {
-            this.field = field;
-            this.value = value;
-            this.reason = reason;
-        }
-
-        public static List<FieldError> of(String field, String value, String reason) {
-            List<FieldError> fieldErrors = new ArrayList<>();
-            fieldErrors.add(new FieldError(field, value, reason));
-            return fieldErrors;
+        public static FieldError of(org.springframework.validation.FieldError error) {
+            return new FieldError(
+                    error.getField(),
+                    error.getRejectedValue() == null ? "" : error.getRejectedValue().toString(),
+                    error.getDefaultMessage(),
+                    error.getCode());
         }
 
         private static List<FieldError> of(BindingResult bindingResult) {
-            final List<org.springframework.validation.FieldError> fieldErrors = bindingResult.getFieldErrors();
-            return fieldErrors.stream()
-                    .map(error -> new FieldError(
-                            error.getField(),
-                            error.getRejectedValue() == null ? "" : error.getRejectedValue().toString(),
-                            error.getDefaultMessage()))
-                    .collect(Collectors.toList());
+            return bindingResult.getFieldErrors()
+                    .stream()
+                    .map(FieldError::of)
+                    .toList();
         }
     }
 }

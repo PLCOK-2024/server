@@ -2,14 +2,14 @@ package com.plcok.archive.dto;
 
 import com.plcok.archive.entity.Archive;
 import com.plcok.user.dto.UserResponse;
-import com.plcok.user.entity.User;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ArchiveResponse {
     private Long id;
 

@@ -1,11 +1,15 @@
 package com.plcok.archive.dto;
 
 import com.plcok.archive.entity.ArchiveAttach;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class AttachResponse {
     private String name;
 

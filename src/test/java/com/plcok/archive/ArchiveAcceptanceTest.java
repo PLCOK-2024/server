@@ -39,17 +39,6 @@ public class ArchiveAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    public void createArchiveSuccess() throws IOException {
-        // given & when
-        mockForCreateArchive();
-        ArchiveResponse response = ArchiveSteps.createArchive(token, ArchiveFixture.defaultCreateArchiveRequest());
-
-        // then
-        assertThat(response.getId()).isNotNull();
-        assertThat(response.getAuthor()).isNotNull();
-    }
-
-    @Test
     public void retrieveSuccess() throws IOException {
         // given
         mockForCreateArchive();

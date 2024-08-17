@@ -1,11 +1,11 @@
 package com.plcok.util;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 
 public class MockMultipartFileFixture {
-    public static File mockImageFile() throws IOException {
+    public static FileInputStream mockImageFile() throws IOException {
         File tempFile = File.createTempFile("test", ".jpg");
         tempFile.deleteOnExit();
 
@@ -13,6 +13,13 @@ public class MockMultipartFileFixture {
             fos.write("test file content".getBytes());
         }
 
-        return tempFile;
+        return new FileInputStream(tempFile);
+    }
+
+    public static InputStream mockImageFile(int width, int height, String imageFormat) throws IOException {
+        var buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        var stream = new ByteArrayOutputStream();
+        ImageIO.write(buffer, imageFormat, stream);
+        return new ByteArrayInputStream(stream.toByteArray());
     }
 }
