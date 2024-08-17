@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.plcok;
 
 import io.restassured.RestAssured;
 import io.restassured.config.DecoderConfig;

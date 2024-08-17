@@ -86,7 +86,7 @@ public class ArchiveService {
 
     @Transactional(readOnly = true)
     public ArchiveCollectResponse findNearArchives(User author, double currentX, double currentY) {
-        var archives = archiveRepository.findNearArchives(currentX, currentY);
+        var archives = archiveRepository.findNearArchives(author, currentX, currentY);
         return ArchiveCollectResponse.builder()
                 .collect(archives.stream().map(ArchiveResponse::fromEntity).toList())
                 .meta(PaginateResponse.builder().count(archives.size()).build())

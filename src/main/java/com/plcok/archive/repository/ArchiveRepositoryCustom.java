@@ -1,9 +1,10 @@
 package com.plcok.archive.repository;
 
 import com.plcok.archive.entity.Archive;
+import com.plcok.user.entity.User;
 
 import java.util.List;
 
 public interface ArchiveRepositoryCustom {
-    List<Archive> findNearArchives(double currentX, double currentY);
+    List<Archive> findNearArchives(User author, double currentX, double currentY);
 }

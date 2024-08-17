@@ -1,9 +1,9 @@
-package com.example.demo.archive;
+package com.plcok.archive;
 
 import com.plcok.archive.dto.ArchiveCollectResponse;
 import com.plcok.archive.dto.ArchiveResponse;
 import com.plcok.archive.dto.CreateArchiveRequest;
-import com.example.demo.util.MockMultipartFileFixture;
+import com.plcok.util.MockMultipartFileFixture;
 import io.restassured.RestAssured;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.http.ContentType;

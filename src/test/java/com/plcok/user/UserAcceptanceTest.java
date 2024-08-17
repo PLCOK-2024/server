@@ -1,6 +1,6 @@
-package com.example.demo.user;
+package com.plcok.user;
 
-import com.example.demo.AcceptanceTest;
+import com.plcok.AcceptanceTest;
 import com.plcok.user.dto.response.TokenResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
