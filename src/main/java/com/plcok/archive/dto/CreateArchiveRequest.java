@@ -1,6 +1,7 @@
 package com.plcok.archive.dto;
 
 import com.plcok.common.rule.UniqueElementsBy;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -32,8 +33,10 @@ public class CreateArchiveRequest {
     @NotNull
     private String content;
 
+    @Builder.Default
     private boolean isPublic = true;
 
+    @Valid
     @Size(max = 10)
     @UniqueElementsBy
     @Builder.Default

@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 
 public class MockMultipartFileFixture {
-    public static File mockImageFile() throws IOException {
+    public static FileInputStream mockImageFile() throws IOException {
         File tempFile = File.createTempFile("test", ".jpg");
         tempFile.deleteOnExit();
 
@@ -13,7 +13,7 @@ public class MockMultipartFileFixture {
             fos.write("test file content".getBytes());
         }
 
-        return tempFile;
+        return new FileInputStream(tempFile);
     }
 
     public static InputStream mockImageFile(int width, int height, String imageFormat) throws IOException {
