@@ -19,9 +19,19 @@ public enum ErrorCode {
     EMAIL_DUPLICATION(400, "U001", "Email is duplication"),
     USER_NOT_FOUND(404, "U002", "User not found"),
 
+
+    // Folder
+    FOLDER_NOT_FOUND(404, "F001", "Folder not found"),
+
+
+    // Archive
+    ARCHIVE_NOT_FOUND(404, "A001", "Archive not found"),
+
+
     // 차단
     USER_ALREADY_BLOCKED(400, "B001", "Already Blocked user"),
     USER_ALREADY_UNBLOCKED(400, "U002", "Already unblocked user"),
+
 
     // Auth
     UNAUTHORIZED(401, "T001", "UNAUTHORIZED"),

@@ -1,6 +1,5 @@
 package com.plcok.user.entity;
 
-import com.plcok.archive.entity.Archive;
 import com.plcok.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -9,9 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Table(name = "folders")
 @Getter
@@ -39,6 +35,14 @@ public class Folder extends BaseEntity {
                 .user(user)
                 .name(name)
                 .build();
+    }
+
+    public void plusCount() {
+        count += 1;
+    }
+
+    public void minusCount() {
+        count -= 1;
     }
 }
 
