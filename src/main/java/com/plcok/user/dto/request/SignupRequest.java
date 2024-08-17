@@ -3,8 +3,10 @@ import com.plcok.common.rule.Regex;
 import com.plcok.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class SignupRequest {
     @Regex(pattern = "^[A-z0-9]+\\@[A-z0-9]+\\.[A-z]+$")

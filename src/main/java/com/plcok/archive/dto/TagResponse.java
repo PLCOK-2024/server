@@ -1,11 +1,15 @@
 package com.plcok.archive.dto;
 
 import com.plcok.archive.entity.Tag;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class TagResponse {
     private String name;
 

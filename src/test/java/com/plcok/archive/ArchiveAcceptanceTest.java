@@ -32,23 +32,12 @@ public class ArchiveAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    public void createArchiveSuccess() throws IOException {
-        // given & when
-        mockForCreateArchive();
-        ArchiveResponse response = ArchiveSteps.createArchive(token, ArchiveFixture.defaultCreateArchiveRequest());
-
-        // then
-        assertThat(response.getId()).isNotNull();
-        assertThat(response.getAuthor()).isNotNull();
-    }
-
-    @Test
     public void findNearArchivesSuccess() throws IOException {
         // given
         mockForCreateArchive();
-        ArchiveSteps.createArchive(token, ArchiveFixture.defaultCreateArchiveRequest());
-        ArchiveResponse withinRadius = ArchiveSteps.createArchive(token, ArchiveFixture.withinRadiusCreateArchiveRequest());
-        ArchiveResponse outsideRadius = ArchiveSteps.createArchive(token, ArchiveFixture.outsideRadiusCreateArchiveRequest());
+        ArchiveSteps.successCreateArchive(token, ArchiveFixture.defaultCreateArchiveRequest());
+        ArchiveResponse withinRadius = ArchiveSteps.successCreateArchive(token, ArchiveFixture.withinRadiusCreateArchiveRequest());
+        ArchiveResponse outsideRadius = ArchiveSteps.successCreateArchive(token, ArchiveFixture.outsideRadiusCreateArchiveRequest());
 
         // when
         List<ArchiveResponse> archives = ArchiveSteps.findNearArchives(token, 37.5071, 127.0907).getCollect();
