@@ -1,63 +1,48 @@
 package com.plcok.archive.repository;
 
-import com.plcok.archive.util.CardinalDirection;
-import com.plcok.archive.util.RadiusCalculator;
 import com.plcok.archive.entity.Archive;
+import com.plcok.archive.entity.QArchive;
+import com.plcok.user.entity.QBlock;
 import com.plcok.user.entity.User;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.util.Pair;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 public class ArchiveRepositoryImpl implements ArchiveRepositoryCustom {
-    private final EntityManager entityManager;
-    private final double DISTANCE = 3;
+    private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Archive> findNearArchives(User author, double topLeftLatitude, double topLeftLongitude, double bottomRightLatitude, double bottomRightLongitude) {
-        double x1 = topLeftLongitude;
-        double y1 = topLeftLatitude;
-        double x2 = bottomRightLongitude;
-        double y2 = bottomRightLatitude;
+    public List<Archive> findNearArchives(User user, double y1, double x1, double y2, double x2) {
+        var query = queryFactory.select(QArchive.archive).from(QArchive.archive);
 
-        String polygonWKT = String.format("POLYGON((%f %f, %f %f, %f %f, %f %f, %f %f))",
-                x1, y1,   // topLeft
-                x1, y2,   // bottomLeft
-                x2, y2,   // bottomRight
-                x2, y1,   // topRight
-                x1, y1);  // topLeft
+        if (true && user != null) { // 차단 한거 미노출 할지
+            var subQuery = JPAExpressions.selectFrom(QBlock.block1)
+                    .where(QBlock.block1.author.eq(user))
+                    .where(QBlock.block1.block.eq(QArchive.archive.author));
 
-//        Pair<Double, Double> northEast = RadiusCalculator.calculateByDirection(baseLatitude, baseLongitude, DISTANCE, CardinalDirection.NORTHEAST.getBearing());
-//        Pair<Double, Double> southWest = RadiusCalculator.calculateByDirection(baseLatitude, baseLongitude, DISTANCE, CardinalDirection.SOUTHWEST.getBearing());
-//
-//        double x1 = northEast.getSecond(); // longitude
-//        double y1 = northEast.getFirst();  // latitude
-//        double x2 = southWest.getSecond(); // longitude
-//        double y2 = southWest.getFirst();  // latitude
-//
-//        String polygonWKT = String.format("POLYGON((%f %f, %f %f, %f %f, %f %f, %f %f))",
-//                x2, y2,   // southWest
-//                x2, y1,   // northWest
-//                x1, y1,   // northEast
-//                x1, y2,   // southEast
-//                x2, y2);
+            query.where(subQuery.notExists());
+        }
 
-        Query query = entityManager.createNativeQuery(
-                "SELECT * \n" +
-                        "FROM archives AS a \n" +
-                        "WHERE MBRContains(ST_POLYGONFROMTEXT('" + polygonWKT + "'), a.location)" +
-                        "AND a.is_public = true \n" +
-                        "AND NOT EXISTS ( \n" +
-                        "   SELECT 1 \n" +
-                        "   FROM blocks AS b \n" +
-                        "   WHERE b.author_id = :authorId AND b.block_id = a.author_id \n" +
-                        ")"
-                , Archive.class
-        ).setParameter("authorId", author.getId());
+        if (true) { // 위치 검색인지
+            String polygonWKT = String.format("ST_POLYGONFROMTEXT('POLYGON((%f %f, %f %f, %f %f, %f %f, %f %f))')",
+                    x2, y2,   // southWest
+                    x2, y1,   // northWest
+                    x1, y1,   // northEast
+                    x1, y2,   // southEast
+                    x2, y2);
 
-        return (List<Archive>) query.getResultList();
+            query.where(
+                    Expressions.booleanTemplate(
+                            "MBRContains(" + polygonWKT + ", {0})",
+                            QArchive.archive.location
+                    ).isTrue()
+            );
+        }
+
+        return query.fetch();
     }
 }
