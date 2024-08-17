@@ -1,4 +1,4 @@
-package com.example.demo.user;
+package com.plcok.user;
 
 import com.plcok.user.dto.request.LoginRequest;
 import com.plcok.user.dto.request.SignupRequest;

@@ -1,4 +1,4 @@
-package com.example.demo.archive;
+package com.plcok.archive;
 
 import com.plcok.archive.dto.CreateArchiveRequest;
 

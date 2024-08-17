@@ -3,6 +3,7 @@ package com.plcok.archive.repository;
 import com.plcok.archive.util.CardinalDirection;
 import com.plcok.archive.util.RadiusCalculator;
 import com.plcok.archive.entity.Archive;
+import com.plcok.user.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class ArchiveRepositoryImpl implements ArchiveRepositoryCustom {
     private final double DISTANCE = 3;
 
     @Override
-    public List<Archive> findNearArchives(double baseLatitude, double baseLongitude) {
+    public List<Archive> findNearArchives(User author, double baseLatitude, double baseLongitude) {
         Pair<Double, Double> northEast = RadiusCalculator.calculateByDirection(baseLatitude, baseLongitude, DISTANCE, CardinalDirection.NORTHEAST.getBearing());
         Pair<Double, Double> southWest = RadiusCalculator.calculateByDirection(baseLatitude, baseLongitude, DISTANCE, CardinalDirection.SOUTHWEST.getBearing());
 
@@ -36,9 +37,14 @@ public class ArchiveRepositoryImpl implements ArchiveRepositoryCustom {
                 "SELECT * \n" +
                         "FROM archives AS a \n" +
                         "WHERE MBRContains(ST_POLYGONFROMTEXT('" + polygonWKT + "'), a.location)" +
-                        "AND a.is_public = true"
+                        "AND a.is_public = true \n" +
+                        "AND NOT EXISTS ( \n" +
+                        "   SELECT 1 \n" +
+                        "   FROM blocks AS b \n" +
+                        "   WHERE b.author_id = :authorId AND b.block_id = a.author_id \n" +
+                        ")"
                 , Archive.class
-        );
+        ).setParameter("authorId", author.getId());
 
         return (List<Archive>) query.getResultList();
     }

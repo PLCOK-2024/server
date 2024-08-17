@@ -1,10 +1,10 @@
-package com.example.demo.archive;
+package com.plcok.archive;
 
-import com.example.demo.AcceptanceTest;
+import com.plcok.AcceptanceTest;
 import com.plcok.archive.dto.ArchiveResponse;
 import com.plcok.common.storage.IStorageManager;
-import com.example.demo.user.UserFixture;
-import com.example.demo.user.UserSteps;
+import com.plcok.user.UserFixture;
+import com.plcok.user.UserSteps;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
