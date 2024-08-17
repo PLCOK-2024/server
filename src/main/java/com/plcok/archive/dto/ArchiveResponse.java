@@ -1,6 +1,7 @@
 package com.plcok.archive.dto;
 
 import com.plcok.archive.entity.Archive;
+import com.plcok.user.dto.UserResponse;
 import com.plcok.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.util.List;
 public class ArchiveResponse {
     private Long id;
 
-    private User author;
+    private UserResponse author;
 
     private Double positionX;
 
@@ -33,6 +34,7 @@ public class ArchiveResponse {
     public static ArchiveResponse fromEntity(Archive archive) {
         return builder()
                 .id(archive.getId())
+                .author(UserResponse.from(archive.getAuthor()))
                 .positionX(archive.getPositionX())
                 .positionY(archive.getPositionY())
                 .address(archive.getAddress())

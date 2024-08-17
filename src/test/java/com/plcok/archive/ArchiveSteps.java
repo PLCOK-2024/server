@@ -26,13 +26,15 @@ public class ArchiveSteps {
                 .extract().as(ArchiveResponse.class);
     }
 
-    public static ArchiveCollectResponse findNearArchives(String token, double x, double y) {
+    public static ArchiveCollectResponse findNearArchives(String token, ArchiveFixture.Coordinate coordinate) {
         return RestAssured
                 .given().log().all()
                 .when()
                 .auth().oauth2(token)
-                .queryParam("x", x)
-                .queryParam("y", y)
+                .queryParam("topLeftLatitude", coordinate.topLeftLatitude)
+                .queryParam("topLeftLongitude", coordinate.topLeftLongitude)
+                .queryParam("bottomRightLatitude", coordinate.bottomRightLatitude)
+                .queryParam("bottomRightLongitude", coordinate.bottomRightLongitude)
                 .get("/api/archives")
                 .then().log().all()
                 .statusCode(200)

@@ -17,21 +17,33 @@ public class ArchiveRepositoryImpl implements ArchiveRepositoryCustom {
     private final double DISTANCE = 3;
 
     @Override
-    public List<Archive> findNearArchives(User author, double baseLatitude, double baseLongitude) {
-        Pair<Double, Double> northEast = RadiusCalculator.calculateByDirection(baseLatitude, baseLongitude, DISTANCE, CardinalDirection.NORTHEAST.getBearing());
-        Pair<Double, Double> southWest = RadiusCalculator.calculateByDirection(baseLatitude, baseLongitude, DISTANCE, CardinalDirection.SOUTHWEST.getBearing());
-
-        double x1 = northEast.getSecond(); // longitude
-        double y1 = northEast.getFirst();  // latitude
-        double x2 = southWest.getSecond(); // longitude
-        double y2 = southWest.getFirst();  // latitude
+    public List<Archive> findNearArchives(User author, double topLeftLatitude, double topLeftLongitude, double bottomRightLatitude, double bottomRightLongitude) {
+        double x1 = topLeftLongitude;
+        double y1 = topLeftLatitude;
+        double x2 = bottomRightLongitude;
+        double y2 = bottomRightLatitude;
 
         String polygonWKT = String.format("POLYGON((%f %f, %f %f, %f %f, %f %f, %f %f))",
-                x2, y2,   // southWest
-                x2, y1,   // northWest
-                x1, y1,   // northEast
-                x1, y2,   // southEast
-                x2, y2);
+                x1, y1,   // topLeft
+                x1, y2,   // bottomLeft
+                x2, y2,   // bottomRight
+                x2, y1,   // topRight
+                x1, y1);  // topLeft
+
+//        Pair<Double, Double> northEast = RadiusCalculator.calculateByDirection(baseLatitude, baseLongitude, DISTANCE, CardinalDirection.NORTHEAST.getBearing());
+//        Pair<Double, Double> southWest = RadiusCalculator.calculateByDirection(baseLatitude, baseLongitude, DISTANCE, CardinalDirection.SOUTHWEST.getBearing());
+//
+//        double x1 = northEast.getSecond(); // longitude
+//        double y1 = northEast.getFirst();  // latitude
+//        double x2 = southWest.getSecond(); // longitude
+//        double y2 = southWest.getFirst();  // latitude
+//
+//        String polygonWKT = String.format("POLYGON((%f %f, %f %f, %f %f, %f %f, %f %f))",
+//                x2, y2,   // southWest
+//                x2, y1,   // northWest
+//                x1, y1,   // northEast
+//                x1, y2,   // southEast
+//                x2, y2);
 
         Query query = entityManager.createNativeQuery(
                 "SELECT * \n" +

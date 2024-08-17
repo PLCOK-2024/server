@@ -46,10 +46,12 @@ public class ArchiveController {
     @GetMapping
     public ResponseEntity<ArchiveCollectResponse> findNearArchives(
             @AuthenticationPrincipal User user,
-            @RequestParam(value = "x") double currentX,
-            @RequestParam(value = "y") double currentY
+            @RequestParam(value = "topLeftLatitude") double topLeftLatitude,
+            @RequestParam(value = "topLeftLongitude") double topLeftLongitude,
+            @RequestParam(value = "bottomRightLatitude") double bottomRightLatitude,
+            @RequestParam(value = "bottomRightLongitude") double bottomRightLongitude
     ) {
-        return ResponseEntity.ok(service.findNearArchives(user, currentX, currentY));
+        return ResponseEntity.ok(service.findNearArchives(user, topLeftLatitude, topLeftLongitude, bottomRightLatitude, bottomRightLongitude));
     }
   
     @Operation(summary = "아카이브 신고")

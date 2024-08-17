@@ -23,12 +23,19 @@ public class ArchiveAcceptanceTest extends AcceptanceTest {
 
     String token;
 
+    String blockedUserToken;
+
+    Long blockedUserId;
+
     @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 
         UserSteps.signUp(UserFixture.defaultSignupRequest());
         token = UserSteps.testLogin(UserFixture.defaultLoginRequest()).getAccessToken();
+
+        blockedUserId = UserSteps.signUp(UserFixture.blockedUserSignupRequest());
+        blockedUserToken = UserSteps.testLogin(UserFixture.blockedUserLoginRequest()).getAccessToken();
     }
 
     @Test
@@ -47,16 +54,32 @@ public class ArchiveAcceptanceTest extends AcceptanceTest {
         // given
         mockForCreateArchive();
         ArchiveSteps.createArchive(token, ArchiveFixture.defaultCreateArchiveRequest());
-        ArchiveResponse withinRadius = ArchiveSteps.createArchive(token, ArchiveFixture.withinRadiusCreateArchiveRequest());
-        ArchiveResponse outsideRadius = ArchiveSteps.createArchive(token, ArchiveFixture.outsideRadiusCreateArchiveRequest());
+        ArchiveResponse songpa = ArchiveSteps.createArchive(token, ArchiveFixture.inSongpaCreateArchiveRequest());
+        ArchiveResponse youngdeungpo = ArchiveSteps.createArchive(token, ArchiveFixture.inYoungdeungpoCreateArchiveRequest());
 
         // when
-        List<ArchiveResponse> archives = ArchiveSteps.findNearArchives(token, 37.5071, 127.0907).getCollect();
+        List<ArchiveResponse> archives = ArchiveSteps.findNearArchives(token, ArchiveFixture.Coordinate.coordinateIncludingSongpa()).getCollect();
 
         // then
         assertThat(archives.size()).isEqualTo(2);
-        assertThat(archives).noneMatch(archive -> archive.getId().equals(outsideRadius.getId()));
-        assertThat(archives).anyMatch(archive -> archive.getId().equals(withinRadius.getId()));
+        assertThat(archives).noneMatch(archive -> archive.getId().equals(youngdeungpo.getId()));
+        assertThat(archives).anyMatch(archive -> archive.getId().equals(songpa.getId()));
+    }
+
+    @Test
+    public void findNearArchivesWithoutBlockedAuthorSuccess() throws IOException {
+        // given
+        mockForCreateArchive();
+        ArchiveSteps.createArchive(token, ArchiveFixture.defaultCreateArchiveRequest());
+        ArchiveResponse blockedArchive = ArchiveSteps.createArchive(blockedUserToken, ArchiveFixture.inSongpaCreateArchiveRequest());
+
+        // when
+        UserSteps.block(token, blockedUserId);
+        List<ArchiveResponse> archives = ArchiveSteps.findNearArchives(token, ArchiveFixture.Coordinate.coordinateIncludingSongpa()).getCollect();
+
+        // then
+        assertThat(archives.size()).isEqualTo(1);
+        assertThat(archives).noneMatch(archive -> archive.getId().equals(blockedArchive.getId()));
     }
 
     private void mockForCreateArchive() throws IOException {
