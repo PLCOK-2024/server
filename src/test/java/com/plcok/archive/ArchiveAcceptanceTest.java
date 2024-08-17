@@ -50,7 +50,7 @@ public class ArchiveAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    public void findNearArchivesSuccess() throws IOException {
+    public void retrieveSuccess() throws IOException {
         // given
         mockForCreateArchive();
         ArchiveSteps.createArchive(token, ArchiveFixture.defaultCreateArchiveRequest());
@@ -58,7 +58,7 @@ public class ArchiveAcceptanceTest extends AcceptanceTest {
         ArchiveResponse youngdeungpo = ArchiveSteps.createArchive(token, ArchiveFixture.inYoungdeungpoCreateArchiveRequest());
 
         // when
-        List<ArchiveResponse> archives = ArchiveSteps.findNearArchives(token, ArchiveFixture.Coordinate.coordinateIncludingSongpa()).getCollect();
+        List<ArchiveResponse> archives = ArchiveSteps.retrieve(token, ArchiveFixture.defaultRetrieveRequest()).getCollect();
 
         // then
         assertThat(archives.size()).isEqualTo(2);
@@ -75,7 +75,7 @@ public class ArchiveAcceptanceTest extends AcceptanceTest {
 
         // when
         UserSteps.block(token, blockedUserId);
-        List<ArchiveResponse> archives = ArchiveSteps.findNearArchives(token, ArchiveFixture.Coordinate.coordinateIncludingSongpa()).getCollect();
+        List<ArchiveResponse> archives = ArchiveSteps.retrieve(token, ArchiveFixture.defaultRetrieveRequest()).getCollect();
 
         // then
         assertThat(archives.size()).isEqualTo(1);

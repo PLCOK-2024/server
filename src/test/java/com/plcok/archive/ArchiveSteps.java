@@ -2,14 +2,17 @@ package com.plcok.archive;
 
 import com.plcok.archive.dto.ArchiveCollectResponse;
 import com.plcok.archive.dto.ArchiveResponse;
+import com.plcok.archive.dto.ArchiveRetrieveRequest;
 import com.plcok.archive.dto.CreateArchiveRequest;
 import com.plcok.util.MockMultipartFileFixture;
 import io.restassured.RestAssured;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.http.ContentType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 public class ArchiveSteps {
     public static ArchiveResponse createArchive(String token, CreateArchiveRequest request) throws IOException {
@@ -26,15 +29,12 @@ public class ArchiveSteps {
                 .extract().as(ArchiveResponse.class);
     }
 
-    public static ArchiveCollectResponse findNearArchives(String token, ArchiveFixture.Coordinate coordinate) {
+    public static ArchiveCollectResponse retrieve(String token, ArchiveRetrieveRequest request) {
         return RestAssured
                 .given().log().all()
                 .when()
                 .auth().oauth2(token)
-                .queryParam("topLeftLatitude", coordinate.topLeftLatitude)
-                .queryParam("topLeftLongitude", coordinate.topLeftLongitude)
-                .queryParam("bottomRightLatitude", coordinate.bottomRightLatitude)
-                .queryParam("bottomRightLongitude", coordinate.bottomRightLongitude)
+                .queryParams(new ObjectMapper().convertValue(request, Map.class))
                 .get("/api/archives")
                 .then().log().all()
                 .statusCode(200)

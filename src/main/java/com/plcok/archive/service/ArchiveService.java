@@ -2,6 +2,7 @@ package com.plcok.archive.service;
 
 import com.plcok.archive.dto.ArchiveCollectResponse;
 import com.plcok.archive.dto.ArchiveResponse;
+import com.plcok.archive.dto.ArchiveRetrieveRequest;
 import com.plcok.common.extension.FileExtension;
 import com.plcok.archive.dto.CreateArchiveRequest;
 import com.plcok.archive.repository.ArchiveRepository;
@@ -15,9 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.ExtensionMethod;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,11 +39,9 @@ public class ArchiveService {
             attaches = new ArrayList<>();
         }
 
-        Point location = generateLocation(request.getPositionX(), request.getPositionY());
-
         // 아카이브 생성
         var archive = Archive.builder()
-                .location(location)
+                .location(geometryFactory.createPoint(new Coordinate(request.getPositionX(), request.getPositionY())))
                 .positionX(request.getPositionX())
                 .positionY(request.getPositionY())
                 .address(request.getAddress())
@@ -88,23 +84,11 @@ public class ArchiveService {
     }
 
     @Transactional(readOnly = true)
-    public ArchiveCollectResponse findNearArchives(User author, double topLeftLatitude, double topLeftLongitude, double bottomRightLatitude, double bottomRightLongitude) {
-        var archives = archiveRepository.findNearArchives(author, topLeftLatitude, topLeftLongitude, bottomRightLatitude, bottomRightLongitude);
+    public ArchiveCollectResponse retrieve(User author, ArchiveRetrieveRequest request) {
+        var archives = archiveRepository.retrieve(author, request);
         return ArchiveCollectResponse.builder()
                 .collect(archives.stream().map(ArchiveResponse::fromEntity).toList())
                 .meta(PaginateResponse.builder().count(archives.size()).build())
                 .build();
-    }
-
-    private Point generateLocation(double x, double y) {
-        return geometryFactory.createPoint(new Coordinate(y, x));
-//        String pointWKT = String.format("POINT(%s %s)", y, x);
-//        Point location = null;
-//        try {
-//            location = (Point) new WKTReader().read(pointWKT);
-//        } catch (ParseException ex) {
-//            return null;
-//        }
-//        return location;
     }
 }

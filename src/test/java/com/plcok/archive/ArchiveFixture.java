@@ -1,5 +1,6 @@
 package com.plcok.archive;
 
+import com.plcok.archive.dto.ArchiveRetrieveRequest;
 import com.plcok.archive.dto.CreateArchiveRequest;
 import com.plcok.archive.dto.TagRequest;
 import lombok.AllArgsConstructor;
@@ -9,16 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ArchiveFixture {
-    @AllArgsConstructor
-    public static class Coordinate {
-        double topLeftLatitude;
-        double topLeftLongitude;
-        double bottomRightLatitude;
-        double bottomRightLongitude;
-
-        public static Coordinate coordinateIncludingSongpa() {
-            return new Coordinate(37.5202, 127.0787, 37.5015, 127.0961);
-        }
+    public static ArchiveRetrieveRequest defaultRetrieveRequest() {
+        return new ArchiveRetrieveRequest(37.5202, 127.0787, 37.5015, 127.0961, null, null);
     }
 
     public static CreateArchiveRequest defaultCreateArchiveRequest() {
