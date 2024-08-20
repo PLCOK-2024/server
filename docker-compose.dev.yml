@@ -5,7 +5,7 @@ services:
   exodus-token-refresh:
     image: dev-web-api:latest
     ports:
-      - "8080:8080"
+      - "8080:80"
     build:
       context: ./
       dockerfile: ./Dockerfile
