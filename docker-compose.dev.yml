@@ -5,7 +5,7 @@ services:
   dev-web-api:
     image: dev-web-api:latest
     ports:
-      - "8080:80"
+      - "80:8080"
     build:
       context: ./
       dockerfile: ./Dockerfile
