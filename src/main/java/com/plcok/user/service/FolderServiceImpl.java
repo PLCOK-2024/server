@@ -1,19 +1,21 @@
 package com.plcok.user.service;
 
 import com.plcok.archive.entity.Archive;
-import com.plcok.archive.repository.ArchiveRepository;
 import com.plcok.common.error.BusinessException;
-import com.plcok.common.error.EntityNotFoundException;
 import com.plcok.common.error.ErrorCode;
 import com.plcok.user.dto.request.CreateFolderRequest;
 import com.plcok.user.dto.response.FolderCollectResponse;
 import com.plcok.user.dto.response.FolderResponse;
 import com.plcok.user.entity.Folder;
+import com.plcok.user.entity.FolderArchive;
 import com.plcok.user.entity.User;
+import com.plcok.user.repository.FolderArchiveRepository;
 import com.plcok.user.repository.folder.FolderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +23,7 @@ public class FolderServiceImpl implements FolderService {
 
     private final FolderRepository folderRepository;
 
-    private final ArchiveRepository archiveRepository;
+    private final FolderArchiveRepository folderArchiveRepository;
 
     @Override
     @Transactional
@@ -39,17 +41,24 @@ public class FolderServiceImpl implements FolderService {
 
     @Override
     @Transactional
-    public FolderResponse addArchiveToFolder(User user, Folder folder, Archive archive) {
-        archive.setFolder(folder);
-        folder.plusCount();
-        return FolderResponse.from(folder);
+    public void addArchiveToFolder(User user, Folder folder, Archive archive) {
+        Optional<FolderArchive> folderArchiveOptional = folderArchiveRepository
+                .findByFolderIdAndArchiveId(folder.getId(), archive.getId());
+        if (folderArchiveOptional.isPresent()) {
+            throw new BusinessException(ErrorCode.FOLDERARCHIVE_ALREADY_ADDED);
+        }
+        FolderArchive folderArchive = FolderArchive.of(folder, archive);
+        folderArchiveRepository.save(folderArchive);
     }
 
     @Override
     @Transactional
-    public FolderResponse removeArchiveFromFolder(User user, Folder folder, Archive archive) {
-        archive.setFolder(null);
-        folder.minusCount();
-        return FolderResponse.from(folder);
+    public void removeArchiveFromFolder(User user, Folder folder, Archive archive) {
+        Optional<FolderArchive> folderArchiveOptional = folderArchiveRepository
+                .findByFolderIdAndArchiveId(folder.getId(), archive.getId());
+        if (folderArchiveOptional.isEmpty()) {
+            throw new BusinessException(ErrorCode.FOLDERARCHIVE_ALREADY_REMOVED);
+        }
+        folderArchiveRepository.deleteByFolderIdAndArchiveId(folder.getId(), archive.getId());
     }
 }

@@ -42,7 +42,7 @@ public class FolderSteps {
             .contentType(ContentType.JSON.withCharset("UTF-8"))
             .when()
             .auth().oauth2(token)
-            .post("/api/folders/add/{folderId}/{archiveId}", folderId, archiveId)
+            .post("/api/folders/{folderId}/archives/{archiveId}", folderId, archiveId)
             .then().log().all()
             .statusCode(204)
             .extract();
@@ -54,7 +54,7 @@ public class FolderSteps {
             .contentType(ContentType.JSON.withCharset("UTF-8"))
             .when()
             .auth().oauth2(token)
-            .delete("/api/folders/remove/{folderId}/{archiveId}", folderId, archiveId)
+            .delete("/api/folders/{folderId}/archives/{archiveId}", folderId, archiveId)
             .then().log().all()
             .statusCode(204)
             .extract();

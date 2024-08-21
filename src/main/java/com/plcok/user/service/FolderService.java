@@ -13,7 +13,7 @@ public interface FolderService {
 
     FolderCollectResponse getFolderList(User user);
 
-    FolderResponse addArchiveToFolder(User user, Folder folder, Archive archive);
+    void addArchiveToFolder(User user, Folder folder, Archive archive);
 
-    FolderResponse removeArchiveFromFolder(User user, Folder folder, Archive archive);
+    void removeArchiveFromFolder(User user, Folder folder, Archive archive);
 }

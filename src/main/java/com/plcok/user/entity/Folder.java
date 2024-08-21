@@ -9,6 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Table(name = "folders")
 @Getter
 @Entity
@@ -28,21 +31,14 @@ public class Folder extends BaseEntity {
     @NotNull
     private String name;
 
-    private int count;
+    @OneToMany(mappedBy = "folder")
+    private List<FolderArchive> folderArchives = new ArrayList<>();
 
     public static Folder of(User user, String name) {
         return builder()
                 .user(user)
                 .name(name)
                 .build();
-    }
-
-    public void plusCount() {
-        count += 1;
-    }
-
-    public void minusCount() {
-        count -= 1;
     }
 }
 

@@ -1,6 +1,5 @@
 package com.plcok.user.controller;
 
-import com.azure.core.annotation.Delete;
 import com.plcok.archive.entity.Archive;
 import com.plcok.common.argumenthandler.Entity;
 import com.plcok.user.dto.request.CreateFolderRequest;
@@ -13,7 +12,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jdk.jfr.Frequency;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +44,8 @@ public class FolderController {
     }
 
     @Operation(summary = "아카이브 폴더에 등록")
-    @PostMapping("/add/{folderId}/{archiveId}")
+    @ApiResponse(responseCode = "204")
+    @PostMapping("/{folderId}/archives/{archiveId}")
     public ResponseEntity<Void> addArchiveToFolder(@AuthenticationPrincipal(errorOnInvalidType = true) User user,
                                                              @PathVariable(name = "folderId") long ignoredFolderId,
                                                              @Entity(name = "folderId") Folder folder,
@@ -58,12 +57,12 @@ public class FolderController {
 
     @Operation(summary = "아카이브 폴더에서 삭제")
     @ApiResponse(responseCode = "204")
-    @DeleteMapping("/remove/{folderId}/{archiveId}")
+    @DeleteMapping("/{folderId}/archives/{archiveId}")
     public ResponseEntity<Void> removeArchiveFromFolder(@AuthenticationPrincipal(errorOnInvalidType = true) User user,
-                                                                  @PathVariable(name = "folderId") long ignoredFolderId,
-                                                                  @Entity(name = "folderId") Folder folder,
-                                                                  @PathVariable(name = "archiveId") long ignoredArchiveId,
-                                                                  @Entity(name = "archiveId") Archive archive) {
+                                                        @PathVariable(name = "folderId") long ignoredFolderId,
+                                                        @Entity(name = "folderId") Folder folder,
+                                                        @PathVariable(name = "archiveId") long ignoredArchiveId,
+                                                        @Entity(name = "archiveId") Archive archive) {
         folderService.removeArchiveFromFolder(user, folder, archive);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

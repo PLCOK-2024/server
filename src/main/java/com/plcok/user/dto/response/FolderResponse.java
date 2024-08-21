@@ -16,13 +16,13 @@ public class FolderResponse {
 
     private String name;
 
-    private int count;
+    private Long count;
 
     public static FolderResponse from(Folder folder) {
         return builder()
                 .id(folder.getId())
                 .name(folder.getName())
-                .count(folder.getCount())
+                .count(0L)
                 .build();
     }
 }
