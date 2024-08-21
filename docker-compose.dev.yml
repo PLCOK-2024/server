@@ -1,0 +1,11 @@
+# docker compose -f docker-compose.dev.yml up -d --no-deps --build
+
+version: '3.9'
+services:
+  dev-web-api:
+    image: dev-web-api:latest
+    ports:
+      - "443:8080"
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
