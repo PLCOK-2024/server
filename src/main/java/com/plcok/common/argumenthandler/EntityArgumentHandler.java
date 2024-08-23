@@ -7,8 +7,10 @@ import com.plcok.archive.entity.Archive;
 import com.plcok.archive.entity.ArchiveComment;
 import com.plcok.common.error.EntityNotFoundException;
 import com.plcok.common.error.ErrorCode;
+import com.plcok.user.entity.Folder;
 import com.plcok.user.repository.UserRepository;
 import com.plcok.user.entity.User;
+import com.plcok.user.repository.folder.FolderRepository;
 import lombok.experimental.ExtensionMethod;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.lang.Nullable;
@@ -31,11 +33,13 @@ public class EntityArgumentHandler implements HandlerMethodArgumentResolver {
     public EntityArgumentHandler(
             UserRepository userRepository,
             ArchiveRepository archiveRepository,
-            ArchiveCommentRepository archiveCommentRepository
+            ArchiveCommentRepository archiveCommentRepository,
+            FolderRepository folderRepository
     ) {
         repositories.put(User.class, userRepository);
         repositories.put(Archive.class, archiveRepository);
         repositories.put(ArchiveComment.class, archiveCommentRepository);
+        repositories.put(Folder.class, folderRepository);
     }
 
     @Override
