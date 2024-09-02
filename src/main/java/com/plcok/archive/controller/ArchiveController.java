@@ -26,7 +26,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/archives")
+@RequestMapping("/api")
 @Tag(name = "아카이브 API")
 public class ArchiveController {
     private final ArchiveService service;
@@ -34,7 +34,7 @@ public class ArchiveController {
 
     @Operation(summary = "아카이브 생성")
     @ApiResponse(responseCode = "201")
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, path = "archives")
     public ResponseEntity<ArchiveResponse> create(
             @AuthenticationPrincipal(errorOnInvalidType = true) User author,
             @RequestPart(value = "request", name = "request") @Valid CreateArchiveRequest request,
@@ -46,17 +46,39 @@ public class ArchiveController {
 
     @Operation(summary = "아카이브 조회")
     @ApiResponse(responseCode = "200")
-    @GetMapping
+    @GetMapping(path = "archives")
     public ResponseEntity<ArchiveCollectResponse> retrieve(
             @AuthenticationPrincipal User user,
             @ModelAttribute ArchiveRetrieveRequest request
     ) {
         return ResponseEntity.ok(service.retrieve(user, request));
     }
+
+    @Operation(summary = "ID로 아카이브 조회")
+    @ApiResponse(responseCode = "200")
+    @GetMapping(path = "archives/{archiveId}")
+    public ResponseEntity<ArchiveResponse> retrieve(
+            @AuthenticationPrincipal User ignoredUser,
+            @Entity(name = "archiveId") Archive archive,
+            @PathVariable(name = "archiveId") String ignoredAuthorId
+    ) {
+        return ResponseEntity.ok(service.get(archive));
+    }
+
+    @Operation(summary = "작성자로 아카이브 조회")
+    @ApiResponse(responseCode = "200")
+    @GetMapping(path = "users/{authorId}/archives")
+    public ResponseEntity<ArchiveCollectResponse> getByAuthor(
+            @AuthenticationPrincipal User user,
+            @Entity(name = "authorId") User author,
+            @PathVariable(name = "authorId") String ignoredAuthorId
+    ) {
+        return ResponseEntity.ok(service.getByUser(user, author));
+    }
   
     @Operation(summary = "아카이브 신고")
     @ApiResponse(responseCode = "204")
-    @PostMapping("{archiveId}/report")
+    @PostMapping("archives/{archiveId}/report")
     public ResponseEntity<ArchiveResponse> report(
             @PathVariable(name = "archiveId") long ignoredArchiveId,
             @Entity(name = "archiveId") Archive archive,

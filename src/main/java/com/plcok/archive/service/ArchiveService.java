@@ -91,4 +91,18 @@ public class ArchiveService {
                 .meta(PaginateResponse.builder().count(archives.size()).build())
                 .build();
     }
+
+    public ArchiveResponse get(Archive archive) {
+        return ArchiveResponse.fromEntity(archive);
+    }
+
+    public ArchiveCollectResponse getByUser(User user, User author) {
+        var isAuthor = user.getId().equals(author.getId());
+        var archives = archiveRepository.getByAuthorAndIsPublic(author, isAuthor);
+
+        return ArchiveCollectResponse.builder()
+                .collect(archives.stream().map(ArchiveResponse::fromEntity).toList())
+                .meta(PaginateResponse.builder().count(archives.size()).build())
+                .build();
+    }
 }
