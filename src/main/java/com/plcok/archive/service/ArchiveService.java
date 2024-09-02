@@ -98,7 +98,12 @@ public class ArchiveService {
 
     public ArchiveCollectResponse getByUser(User user, User author) {
         var isAuthor = user.getId().equals(author.getId());
-        var archives = archiveRepository.getByAuthorAndIsPublic(author, isAuthor);
+        List<Archive> archives;
+        if (isAuthor) {
+            archives = archiveRepository.getByAuthor(author);
+        } else {
+            archives = archiveRepository.getByAuthorAndIsPublic(author, true);
+        }
 
         return ArchiveCollectResponse.builder()
                 .collect(archives.stream().map(ArchiveResponse::fromEntity).toList())

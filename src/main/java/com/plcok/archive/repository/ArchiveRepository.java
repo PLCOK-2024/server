@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface ArchiveRepository extends JpaRepository<Archive, Long>, ArchiveRepositoryCustom {
     List<Archive> getByAuthorAndIsPublic(User author, boolean isPublic);
+
+    List<Archive> getByAuthor(User author);
 }
