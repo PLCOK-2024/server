@@ -1,13 +1,14 @@
 package com.plcok.notification.entity;
 
 import com.plcok.common.BaseEntity;
+import com.plcok.notification.dto.request.NotificationTokenRequest;
 import com.plcok.user.entity.User;
 import com.plcok.notification.entity.enumerated.DeviceType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -20,6 +21,9 @@ import java.util.Set;
         @AttributeOverride(name = "createdAt", column = @Column(name = "created_at", nullable = false)),
         @AttributeOverride(name = "updatedAt", column = @Column(name = "updated_at"))
 })
+@SuperBuilder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Device extends BaseEntity {
     @NotNull
     @Column(name = "device_type", nullable = false)
@@ -39,4 +43,11 @@ public class Device extends BaseEntity {
     @OneToMany(mappedBy = "device")
     private Set<DeviceNotification> deviceNotifications = new LinkedHashSet<>();
 
+    public static Device of(NotificationTokenRequest request, User user) {
+        return builder()
+                .deviceType(DeviceType.valueOf(request.getDeviceType()))
+                .deviceToken(request.getDeviceToken())
+                .user(user)
+                .build();
+    }
 }
