@@ -15,6 +15,6 @@ public enum DeviceType {
                 return deviceType;
             }
         }
-        throw new BusinessException(ErrorCode.DEVICETYPE_NOT_VALID);
+        throw new BusinessException(ErrorCode.INVALID_TYPE_VALUE);
     }
 }

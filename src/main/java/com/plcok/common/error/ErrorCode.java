@@ -43,11 +43,7 @@ public enum ErrorCode {
 
 
     // OAuth
-    PROVIDER_NOT_VALID(404, "O001", "this provider is not valid"),
-
-
-    // Notification
-    DEVICETYPE_NOT_VALID(401, "N001", "this device type is not valid");
+    PROVIDER_NOT_VALID(404, "O001", "this provider is not valid");
 
 
     private final int status;
