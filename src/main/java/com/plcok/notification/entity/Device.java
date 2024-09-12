@@ -45,7 +45,7 @@ public class Device extends BaseEntity {
 
     public static Device of(NotificationTokenRequest request, User user) {
         return builder()
-                .deviceType(DeviceType.valueOf(request.getDeviceType()))
+                .deviceType(request.getDeviceType())
                 .deviceToken(request.getDeviceToken())
                 .user(user)
                 .build();
