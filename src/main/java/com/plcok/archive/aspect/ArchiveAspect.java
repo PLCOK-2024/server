@@ -21,7 +21,7 @@ public class ArchiveAspect {
     /**
      * 비공개 아카이브 다른사람이 접근했을때 404 반환
      */
-    @Around("execution(* com.example.demo.archive.controller.*.*(..))")
+    @Around("execution(* com.plcok.archive.controller.*.*(..))")
     public Object isOwnerIsPrivate(ProceedingJoinPoint joinPoint) throws Throwable {
         var args = joinPoint.getArgs();
         var method = ((MethodSignature) joinPoint.getSignature()).getMethod();
