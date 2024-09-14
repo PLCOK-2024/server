@@ -97,4 +97,13 @@ public class ArchiveController {
                                                               @PathVariable(name = "folderId") long ignoredFolderId) {
         return ResponseEntity.ok(service.getByFolder(user, folder));
     }
+
+    @Operation(summary = "공개/비공개 전환")
+    @ApiResponse(responseCode = "200")
+    @PatchMapping("/archives/{archiveId}/public")
+    public ResponseEntity<Boolean> changeIsPublic(@AuthenticationPrincipal User user,
+                                               @Entity(name = "archiveId") Archive archive,
+                                               @PathVariable(name = "archiveId") long ignoredAuthorId) {
+        return ResponseEntity.ok(service.changeIsPublic(user, archive));
+    }
 }
