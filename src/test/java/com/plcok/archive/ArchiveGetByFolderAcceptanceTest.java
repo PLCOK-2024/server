@@ -1,14 +1,11 @@
 package com.plcok.archive;
 
 import com.plcok.AcceptanceTest;
-import com.plcok.archive.dto.ArchiveCollectResponse;
-import com.plcok.archive.dto.ArchiveResponse;
 import com.plcok.common.storage.IStorageManager;
 import com.plcok.folder.FolderFixture;
 import com.plcok.folder.FolderSteps;
 import com.plcok.user.UserFixture;
 import com.plcok.user.UserSteps;
-import com.plcok.user.dto.response.FolderResponse;
 import com.plcok.util.MockMultipartFileFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
-public class ArchiveGetByFolderTest extends AcceptanceTest {
+public class ArchiveGetByFolderAcceptanceTest extends AcceptanceTest {
 
     @MockBean
     IStorageManager storageManager;

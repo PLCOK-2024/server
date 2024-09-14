@@ -102,8 +102,18 @@ public class ArchiveController {
     @ApiResponse(responseCode = "200")
     @PatchMapping("/archives/{archiveId}/public")
     public ResponseEntity<Boolean> changeIsPublic(@AuthenticationPrincipal User user,
-                                               @Entity(name = "archiveId") Archive archive,
-                                               @PathVariable(name = "archiveId") long ignoredAuthorId) {
+                                                  @Entity(name = "archiveId") Archive archive,
+                                                  @PathVariable(name = "archiveId") long ignoredAuthorId) {
         return ResponseEntity.ok(service.changeIsPublic(user, archive));
+    }
+
+    @Operation(summary = "아카이브 삭제")
+    @ApiResponse(responseCode = "204")
+    @DeleteMapping("/archives/{archiveId}")
+    public ResponseEntity<Void> deleteArchive(@AuthenticationPrincipal User user,
+                                              @Entity(name = "archiveId") Archive archive,
+                                              @PathVariable(name = "archiveId") long ignoredAuthorId) {
+        service.deleteArchive(user, archive);
+        return ResponseEntity.noContent().build();
     }
 }

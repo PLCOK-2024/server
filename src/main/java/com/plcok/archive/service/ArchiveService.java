@@ -137,4 +137,12 @@ public class ArchiveService {
         archive.changeIsPublic();
         return archive.getIsPublic();
     }
+
+    @Transactional
+    public void deleteArchive(User user, Archive archive) {
+        if (!archive.getUser().getId().equals(user.getId())) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED);
+        }
+        archiveRepository.delete(archive);
+    }
 }
