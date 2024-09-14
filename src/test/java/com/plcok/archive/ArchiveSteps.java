@@ -57,4 +57,15 @@ public class ArchiveSteps {
                 .statusCode(200)
                 .extract().as(ArchiveCollectResponse.class);
     }
+
+    public static ArchiveCollectResponse getByFolder(String token, long folderId) {
+        return RestAssured
+                .given().log().all()
+                .when()
+                .auth().oauth2(token)
+                .get("/api/folders/{folderId}/archives", folderId)
+                .then().log().all()
+                .statusCode(200)
+                .extract().as(ArchiveCollectResponse.class);
+    }
 }

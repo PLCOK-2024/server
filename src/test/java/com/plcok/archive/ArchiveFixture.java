@@ -3,6 +3,8 @@ package com.plcok.archive;
 import com.plcok.archive.dto.ArchiveRetrieveRequest;
 import com.plcok.archive.dto.CreateArchiveRequest;
 import com.plcok.archive.dto.TagRequest;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ArchiveFixture {
@@ -44,5 +46,25 @@ public class ArchiveFixture {
                 .tags(List.of(new TagRequest("버터바")))
                 .isPublic(true)
                 .build();
+    }
+
+    public static CreateArchiveRequest createArchiveRequest(int i) {
+        return CreateArchiveRequest.builder()
+                .name("킨더커피" + i)
+                .content("킨더커피 크렘브륄레 마카롱 맛있어요" + i)
+                .address("서울특별시 송파구 석촌호수로 135" + i)
+                .positionX(127.0837)
+                .positionY(37.5152)
+                .tags(getTagRequests(i))
+                .isPublic(true)
+                .build();
+    }
+
+    private static List<TagRequest> getTagRequests(int cnt) {
+        List<TagRequest> tagRequests = new ArrayList<>();
+        for (int i = 1 ; i <= cnt; i++) {
+            tagRequests.add(new TagRequest("마카롱" + i));
+        }
+        return tagRequests;
     }
 }
