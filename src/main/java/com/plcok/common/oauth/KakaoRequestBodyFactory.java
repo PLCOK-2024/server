@@ -6,7 +6,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.Map;
 
-@Component("Kakao")
+@Component
 public class KakaoRequestBodyFactory implements OAuthRequestBodyFactory {
 
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")

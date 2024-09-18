@@ -8,6 +8,7 @@ import com.plcok.archive.service.ArchiveService;
 import com.plcok.common.argumenthandler.Entity;
 import com.plcok.archive.entity.Archive;
 import com.plcok.common.service.ReportService;
+import com.plcok.user.dto.response.FolderResponse;
 import com.plcok.user.entity.Folder;
 import com.plcok.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
@@ -98,13 +99,23 @@ public class ArchiveController {
         return ResponseEntity.ok(service.getByFolder(user, folder));
     }
 
+    @Operation(summary = "폴더정보와 함께 아카이브 조회")
+    @ApiResponse(responseCode = "200")
+    @GetMapping(path = "/folders/{folderId}")
+    public ResponseEntity<FolderResponse> getArchivesWithFolderInfo(@AuthenticationPrincipal User user,
+                                                                    @Entity(name = "folderId") Folder folder,
+                                                                    @PathVariable(name = "folderId") long ignoredFolderId) {
+        return ResponseEntity.ok(service.getArchivesWithFolderInfo(user, folder));
+    }
+
     @Operation(summary = "공개/비공개 전환")
     @ApiResponse(responseCode = "200")
-    @PatchMapping("/archives/{archiveId}/public")
+    @PatchMapping("/archives/{archiveId}/public/{isPublic}")
     public ResponseEntity<Boolean> changeIsPublic(@AuthenticationPrincipal User user,
                                                   @Entity(name = "archiveId") Archive archive,
-                                                  @PathVariable(name = "archiveId") long ignoredAuthorId) {
-        return ResponseEntity.ok(service.changeIsPublic(user, archive));
+                                                  @PathVariable(name = "archiveId") long ignoredAuthorId,
+                                                  @PathVariable(name = "isPublic") boolean isPublic) {
+        return ResponseEntity.ok(service.changeIsPublic(user, archive, isPublic));
     }
 
     @Operation(summary = "아카이브 삭제")

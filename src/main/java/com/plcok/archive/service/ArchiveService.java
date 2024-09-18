@@ -13,10 +13,12 @@ import com.plcok.archive.entity.Archive;
 import com.plcok.archive.entity.ArchiveAttach;
 import com.plcok.archive.entity.ArchiveTag;
 import com.plcok.common.storage.IStorageManager;
+import com.plcok.user.dto.response.FolderResponse;
 import com.plcok.user.entity.Folder;
 import com.plcok.user.entity.FolderArchive;
 import com.plcok.user.entity.User;
 import com.plcok.user.repository.FolderArchiveRepository;
+import com.plcok.user.repository.folder.FolderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.ExtensionMethod;
 import org.locationtech.jts.geom.Coordinate;
@@ -38,6 +40,7 @@ public class ArchiveService {
     private final ArchiveRepository archiveRepository;
     private final GeometryFactory geometryFactory;
     private final FolderArchiveRepository folderArchiveRepository;
+    private final FolderRepository folderRepository;
 
     @Transactional(rollbackFor = IOException.class)
     public ArchiveResponse create(User author, CreateArchiveRequest request, List<MultipartFile> attaches) throws IOException {
@@ -124,17 +127,25 @@ public class ArchiveService {
         }
         List<FolderArchive> folderArchives = folderArchiveRepository.getByFolder(folder);
         return ArchiveCollectResponse.builder()
-                .collect(folderArchives.stream().map((fa) -> ArchiveResponse.fromEntity(fa.getArchive())).toList())
+                .collect(folderArchives.stream().map(fa -> ArchiveResponse.fromEntity(fa.getArchive())).toList())
                 .meta(PaginateResponse.builder().count(folderArchives.size()).build())
                 .build();
     }
 
+    @Transactional(readOnly = true)
+    public FolderResponse getArchivesWithFolderInfo(User user, Folder folder) {
+        if (!folder.getUser().getId().equals(user.getId())) {
+            throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+        return FolderResponse.from(folder);
+    }
+
     @Transactional
-    public boolean changeIsPublic(User user, Archive archive) {
+    public boolean changeIsPublic(User user, Archive archive, boolean isPublic) {
         if (!archive.getUser().getId().equals(user.getId())) {
             throw new BusinessException(ErrorCode.UNAUTHORIZED);
         }
-        archive.changeIsPublic();
+        archive.changeIsPublic(isPublic);
         return archive.getIsPublic();
     }
 

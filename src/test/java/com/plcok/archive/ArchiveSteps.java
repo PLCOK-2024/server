@@ -4,6 +4,7 @@ import com.plcok.archive.dto.ArchiveCollectResponse;
 import com.plcok.archive.dto.ArchiveResponse;
 import com.plcok.archive.dto.ArchiveRetrieveRequest;
 import com.plcok.archive.dto.CreateArchiveRequest;
+import com.plcok.user.dto.response.FolderResponse;
 import io.restassured.RestAssured;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.http.ContentType;
@@ -69,23 +70,34 @@ public class ArchiveSteps {
                 .extract().as(ArchiveCollectResponse.class);
     }
 
-    public static boolean successChangeIsPublic(String token, long archiveId) {
-        return RestAssured
-            .given().log().all()
-            .when()
-            .auth().oauth2(token)
-            .patch("/api/archives/{archiveId}/public", archiveId)
-            .then().log().all()
-            .statusCode(200)
-            .extract().as(Boolean.class);
-    }
-
-    public static ErrorResponse failChangeIsPublic(String token, long archiveId) {
+    public static FolderResponse getArchivesWithFolderInfo(String token, long folderId) {
         return RestAssured
                 .given().log().all()
                 .when()
                 .auth().oauth2(token)
-                .patch("/api/archives/{archiveId}/public", archiveId)
+                .get("/api/folders/{folderId}", folderId)
+                .then().log().all()
+                .statusCode(200)
+                .extract().as(FolderResponse.class);
+    }
+
+    public static void successChangeIsPublic(String token, long archiveId, boolean isPublic) {
+        RestAssured
+                .given().log().all()
+                .when()
+                .auth().oauth2(token)
+                .patch("/api/archives/{archiveId}/public/{isPublic}", archiveId, isPublic)
+                .then().log().all()
+                .statusCode(200)
+                .extract().as(Boolean.class);
+    }
+
+    public static ErrorResponse failChangeIsPublic(String token, long archiveId, boolean isPublic) {
+        return RestAssured
+                .given().log().all()
+                .when()
+                .auth().oauth2(token)
+                .patch("/api/archives/{archiveId}/public/{isPublic}", archiveId, isPublic)
                 .then().log().all()
                 .statusCode(401)
                 .extract().as(ErrorResponse.class);

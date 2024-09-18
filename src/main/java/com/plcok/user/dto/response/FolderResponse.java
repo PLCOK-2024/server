@@ -1,10 +1,13 @@
 package com.plcok.user.dto.response;
 
+import com.plcok.archive.dto.ArchiveResponse;
 import com.plcok.user.entity.Folder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -16,13 +19,19 @@ public class FolderResponse {
 
     private String name;
 
-    private Long count;
+    private int count;
+
+    private List<ArchiveResponse> archiveResponses;
 
     public static FolderResponse from(Folder folder) {
         return builder()
                 .id(folder.getId())
                 .name(folder.getName())
-                .count(0L)
+                .count(folder.getFolderArchives().size())
+                .archiveResponses(folder.getFolderArchives()
+                        .stream()
+                        .map(fa -> ArchiveResponse.fromEntity(fa.getArchive()))
+                        .toList())
                 .build();
     }
 }

@@ -64,10 +64,10 @@ public class Archive extends BaseEntity implements IReportable {
     @OrderBy("sequence desc")
     private List<ArchiveAttach> archiveAttaches = new ArrayList<>();
 
-    @OneToMany(mappedBy = "archive")
+    @OneToMany(mappedBy = "archive", cascade = CascadeType.ALL)
     private Set<ArchiveComment> archiveComments = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "archive")
+    @OneToMany(mappedBy = "archive", cascade = CascadeType.ALL)
     private Set<ArchiveReaction> archiveReactions = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "archive", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -84,7 +84,7 @@ public class Archive extends BaseEntity implements IReportable {
         return ResourceType.ARCHIVE;
     }
 
-    public void changeIsPublic() {
-        this.isPublic = !this.isPublic;
+    public void changeIsPublic(boolean isPublic) {
+        this.isPublic = isPublic;
     }
 }

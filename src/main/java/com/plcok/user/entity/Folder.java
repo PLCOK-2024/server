@@ -32,12 +32,13 @@ public class Folder extends BaseEntity {
     private String name;
 
     @OneToMany(mappedBy = "folder")
-    private List<FolderArchive> folderArchives = new ArrayList<>();
+    private List<FolderArchive> folderArchives;
 
     public static Folder of(User user, String name) {
         return builder()
                 .user(user)
                 .name(name)
+                .folderArchives(new ArrayList<>())
                 .build();
     }
 }
