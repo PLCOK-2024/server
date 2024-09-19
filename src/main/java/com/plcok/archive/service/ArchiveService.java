@@ -13,7 +13,7 @@ import com.plcok.archive.entity.Archive;
 import com.plcok.archive.entity.ArchiveAttach;
 import com.plcok.archive.entity.ArchiveTag;
 import com.plcok.common.storage.IStorageManager;
-import com.plcok.user.dto.response.FolderResponse;
+import com.plcok.user.dto.response.FolderDetailResponse;
 import com.plcok.user.entity.Folder;
 import com.plcok.user.entity.FolderArchive;
 import com.plcok.user.entity.User;
@@ -133,11 +133,11 @@ public class ArchiveService {
     }
 
     @Transactional(readOnly = true)
-    public FolderResponse getArchivesWithFolderInfo(User user, Folder folder) {
+    public FolderDetailResponse getArchivesWithFolderInfo(User user, Folder folder) {
         if (!folder.getUser().getId().equals(user.getId())) {
             throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
-        return FolderResponse.from(folder);
+        return FolderDetailResponse.fromEntity(folder);
     }
 
     @Transactional
@@ -145,7 +145,7 @@ public class ArchiveService {
         if (!archive.getUser().getId().equals(user.getId())) {
             throw new BusinessException(ErrorCode.UNAUTHORIZED);
         }
-        archive.changeIsPublic(isPublic);
+        archive.setIsPublic(isPublic);
         return archive.getIsPublic();
     }
 

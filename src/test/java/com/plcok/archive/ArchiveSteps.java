@@ -4,7 +4,7 @@ import com.plcok.archive.dto.ArchiveCollectResponse;
 import com.plcok.archive.dto.ArchiveResponse;
 import com.plcok.archive.dto.ArchiveRetrieveRequest;
 import com.plcok.archive.dto.CreateArchiveRequest;
-import com.plcok.user.dto.response.FolderResponse;
+import com.plcok.user.dto.response.FolderDetailResponse;
 import io.restassured.RestAssured;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.http.ContentType;
@@ -70,7 +70,7 @@ public class ArchiveSteps {
                 .extract().as(ArchiveCollectResponse.class);
     }
 
-    public static FolderResponse getArchivesWithFolderInfo(String token, long folderId) {
+    public static FolderDetailResponse getArchivesWithFolderInfo(String token, long folderId) {
         return RestAssured
                 .given().log().all()
                 .when()
@@ -78,7 +78,7 @@ public class ArchiveSteps {
                 .get("/api/folders/{folderId}", folderId)
                 .then().log().all()
                 .statusCode(200)
-                .extract().as(FolderResponse.class);
+                .extract().as(FolderDetailResponse.class);
     }
 
     public static boolean successChangeIsPublic(String token, long archiveId) {

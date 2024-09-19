@@ -8,7 +8,7 @@ import com.plcok.archive.service.ArchiveService;
 import com.plcok.common.argumenthandler.Entity;
 import com.plcok.archive.entity.Archive;
 import com.plcok.common.service.ReportService;
-import com.plcok.user.dto.response.FolderResponse;
+import com.plcok.user.dto.response.FolderDetailResponse;
 import com.plcok.user.entity.Folder;
 import com.plcok.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
@@ -102,9 +102,9 @@ public class ArchiveController {
     @Operation(summary = "폴더정보와 함께 아카이브 조회")
     @ApiResponse(responseCode = "200")
     @GetMapping(path = "/folders/{folderId}")
-    public ResponseEntity<FolderResponse> getArchivesWithFolderInfo(@AuthenticationPrincipal User user,
-                                                                    @Entity(name = "folderId") Folder folder,
-                                                                    @PathVariable(name = "folderId") long ignoredFolderId) {
+    public ResponseEntity<FolderDetailResponse> getArchivesWithFolderInfo(@AuthenticationPrincipal User user,
+                                                                          @Entity(name = "folderId") Folder folder,
+                                                                          @PathVariable(name = "folderId") long ignoredFolderId) {
         return ResponseEntity.ok(service.getArchivesWithFolderInfo(user, folder));
     }
 

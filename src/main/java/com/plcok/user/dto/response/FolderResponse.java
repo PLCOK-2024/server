@@ -1,18 +1,15 @@
 package com.plcok.user.dto.response;
 
-import com.plcok.archive.dto.ArchiveResponse;
 import com.plcok.user.entity.Folder;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
+import lombok.experimental.SuperBuilder;
 
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 public class FolderResponse {
 
     private Long id;
@@ -21,17 +18,15 @@ public class FolderResponse {
 
     private int count;
 
-    private List<ArchiveResponse> archiveResponses;
+    public static FolderResponse fromEntity(Folder folder) {
+        return fromEntity(folder, builder());
+    }
 
-    public static FolderResponse from(Folder folder) {
-        return builder()
+    public static <T extends FolderResponse> T fromEntity(Folder folder, FolderResponse.FolderResponseBuilder<T, ?> builder) {
+        return builder
                 .id(folder.getId())
                 .name(folder.getName())
                 .count(folder.getFolderArchives().size())
-                .archiveResponses(folder.getFolderArchives()
-                        .stream()
-                        .map(fa -> ArchiveResponse.fromEntity(fa.getArchive()))
-                        .toList())
                 .build();
     }
 }

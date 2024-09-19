@@ -28,7 +28,7 @@ public class FolderServiceImpl implements FolderService {
     @Override
     @Transactional
     public FolderResponse createFolder(User user, CreateFolderRequest request) {
-        return FolderResponse.from(folderRepository.save(Folder.of(user, request.getName())));
+        return FolderResponse.fromEntity(folderRepository.save(Folder.of(user, request.getName())));
     }
 
     @Override
