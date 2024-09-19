@@ -38,11 +38,11 @@ public class ArchiveChangeIsPublicTest extends AcceptanceTest {
         var request = ArchiveFixture.defaultCreateArchiveRequest();
         var archiveResponse = ArchiveSteps.successCreateArchive(token, request);
         ArchiveSteps.successChangeIsPublic(token, archiveResponse.getId());
-        var response = ArchiveSteps.retrieveById(token, archiveResponse.getId());
+        var response = ArchiveSteps.successRetrieveById(token, archiveResponse.getId());
         assertThat(response.getIsPublic()).isFalse();
 
         ArchiveSteps.successChangeIsPublic(token, archiveResponse.getId());
-        response = ArchiveSteps.retrieveById(token, archiveResponse.getId());
+        response = ArchiveSteps.successRetrieveById(token, archiveResponse.getId());
         assertThat(response.getIsPublic()).isTrue();
     }
 

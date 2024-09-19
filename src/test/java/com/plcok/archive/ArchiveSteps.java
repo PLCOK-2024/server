@@ -91,7 +91,7 @@ public class ArchiveSteps {
                 .extract().as(ErrorResponse.class);
     }
 
-    public static ArchiveResponse retrieveById(String token, long archiveId) {
+    public static ArchiveResponse successRetrieveById(String token, long archiveId) {
         return RestAssured
                 .given().log().all()
                 .when()
