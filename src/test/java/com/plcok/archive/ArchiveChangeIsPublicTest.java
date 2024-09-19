@@ -1,6 +1,7 @@
 package com.plcok.archive;
 
 import com.plcok.AcceptanceTest;
+import com.plcok.common.error.BusinessException;
 import com.plcok.common.error.ErrorCode;
 import com.plcok.common.storage.IStorageManager;
 import com.plcok.user.UserFixture;
@@ -9,12 +10,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.io.IOException;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
-public class ArchiveChangeIsPublicAcceptanceTest extends AcceptanceTest {
+public class ArchiveChangeIsPublicTest extends AcceptanceTest {
 
     @MockBean
     IStorageManager storageManager;
@@ -33,11 +37,11 @@ public class ArchiveChangeIsPublicAcceptanceTest extends AcceptanceTest {
     public void changeIsPublic_success() {
         var request = ArchiveFixture.defaultCreateArchiveRequest();
         var archiveResponse = ArchiveSteps.successCreateArchive(token, request);
-        ArchiveSteps.successChangeIsPublic(token, archiveResponse.getId(), false);
+        ArchiveSteps.successChangeIsPublic(token, archiveResponse.getId());
         var response = ArchiveSteps.successRetrieveById(token, archiveResponse.getId());
         assertThat(response.getIsPublic()).isFalse();
 
-        ArchiveSteps.successChangeIsPublic(token, archiveResponse.getId(), true);
+        ArchiveSteps.successChangeIsPublic(token, archiveResponse.getId());
         response = ArchiveSteps.successRetrieveById(token, archiveResponse.getId());
         assertThat(response.getIsPublic()).isTrue();
     }

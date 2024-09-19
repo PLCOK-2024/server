@@ -127,7 +127,7 @@ public class ArchiveService {
         }
         List<FolderArchive> folderArchives = folderArchiveRepository.getByFolder(folder);
         return ArchiveCollectResponse.builder()
-                .collect(folderArchives.stream().map(fa -> ArchiveResponse.fromEntity(fa.getArchive())).toList())
+            .collect(folderArchives.stream().map(fa -> ArchiveResponse.fromEntity(fa.getArchive())).toList())
                 .meta(PaginateResponse.builder().count(folderArchives.size()).build())
                 .build();
     }

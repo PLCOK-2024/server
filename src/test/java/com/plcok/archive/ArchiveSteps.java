@@ -81,15 +81,15 @@ public class ArchiveSteps {
                 .extract().as(FolderResponse.class);
     }
 
-    public static void successChangeIsPublic(String token, long archiveId, boolean isPublic) {
-        RestAssured
-                .given().log().all()
-                .when()
-                .auth().oauth2(token)
-                .patch("/api/archives/{archiveId}/public/{isPublic}", archiveId, isPublic)
-                .then().log().all()
-                .statusCode(200)
-                .extract().as(Boolean.class);
+    public static boolean successChangeIsPublic(String token, long archiveId) {
+        return RestAssured
+            .given().log().all()
+            .when()
+            .auth().oauth2(token)
+            .patch("/api/archives/{archiveId}/public", archiveId)
+            .then().log().all()
+            .statusCode(200)
+            .extract().as(Boolean.class);
     }
 
     public static ErrorResponse failChangeIsPublic(String token, long archiveId, boolean isPublic) {
@@ -101,6 +101,17 @@ public class ArchiveSteps {
                 .then().log().all()
                 .statusCode(401)
                 .extract().as(ErrorResponse.class);
+    }
+
+    public static void successChangeIsPublic(String token, long archiveId, boolean isPublic) {
+        RestAssured
+                .given().log().all()
+                .when()
+                .auth().oauth2(token)
+                .patch("/api/archives/{archiveId}/public/{isPublic}", archiveId, isPublic)
+                .then().log().all()
+                .statusCode(200)
+                .extract().as(Boolean.class);
     }
 
     public static ArchiveResponse successRetrieveById(String token, long archiveId) {
