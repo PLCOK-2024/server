@@ -119,7 +119,7 @@ public class ArchiveService {
 
     @Transactional(readOnly = true)
     public ArchiveCollectResponse getByFolder(User user, Folder folder) {
-        if (folder.getUser().getId() != user.getId()) {
+        if (!folder.getUser().getId().equals(user.getId())) {
             throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
         List<FolderArchive> folderArchives = folderArchiveRepository.getByFolder(folder);
@@ -127,5 +127,22 @@ public class ArchiveService {
                 .collect(folderArchives.stream().map((fa) -> ArchiveResponse.fromEntity(fa.getArchive())).toList())
                 .meta(PaginateResponse.builder().count(folderArchives.size()).build())
                 .build();
+    }
+
+    @Transactional
+    public boolean changeIsPublic(User user, Archive archive) {
+        if (!archive.getUser().getId().equals(user.getId())) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED);
+        }
+        archive.changeIsPublic();
+        return archive.getIsPublic();
+    }
+
+    @Transactional
+    public void deleteArchive(User user, Archive archive) {
+        if (!archive.getUser().getId().equals(user.getId())) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED);
+        }
+        archiveRepository.delete(archive);
     }
 }
