@@ -101,4 +101,37 @@ public class ArchiveSteps {
                 .statusCode(200)
                 .extract().as(ArchiveResponse.class);
     }
+
+    public static ErrorResponse failRetrieveById(String token, long archiveId) {
+        return RestAssured
+                .given().log().all()
+                .when()
+                .auth().oauth2(token)
+                .get("/api/archives/{archiveId}", archiveId)
+                .then().log().all()
+                .statusCode(404)
+                .extract().as(ErrorResponse.class);
+    }
+
+    public static void successDeleteArchive(String token, long archiveId) {
+        RestAssured
+            .given().log().all()
+            .when()
+            .auth().oauth2(token)
+            .delete("/api/archives/{archiveId}", archiveId)
+            .then().log().all()
+            .statusCode(204)
+            .extract();
+    }
+
+    public static ErrorResponse failDeleteArchive(String token, long archiveId) {
+        return RestAssured
+                .given().log().all()
+                .when()
+                .auth().oauth2(token)
+                .delete("/api/archives/{archiveId}", archiveId)
+                .then().log().all()
+                .statusCode(401)
+                .extract().as(ErrorResponse.class);
+    }
 }
