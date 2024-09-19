@@ -102,8 +102,8 @@ public class ArchiveController {
     @ApiResponse(responseCode = "200")
     @PatchMapping("/archives/{archiveId}/public")
     public ResponseEntity<Boolean> changeIsPublic(@AuthenticationPrincipal User user,
-                                                  @Entity(name = "archiveId") Archive archive,
-                                                  @PathVariable(name = "archiveId") long ignoredAuthorId) {
+                                               @Entity(name = "archiveId") Archive archive,
+                                               @PathVariable(name = "archiveId") long ignoredAuthorId) {
         return ResponseEntity.ok(service.changeIsPublic(user, archive));
     }
 
