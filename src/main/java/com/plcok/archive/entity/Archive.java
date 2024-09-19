@@ -83,4 +83,8 @@ public class Archive extends BaseEntity implements IReportable {
     public ResourceType getResourceType() {
         return ResourceType.ARCHIVE;
     }
+
+    public void changeIsPublic() {
+        this.isPublic = !this.isPublic;
+    }
 }

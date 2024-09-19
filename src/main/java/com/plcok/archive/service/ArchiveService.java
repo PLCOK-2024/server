@@ -3,6 +3,8 @@ package com.plcok.archive.service;
 import com.plcok.archive.dto.ArchiveCollectResponse;
 import com.plcok.archive.dto.ArchiveResponse;
 import com.plcok.archive.dto.ArchiveRetrieveRequest;
+import com.plcok.common.error.BusinessException;
+import com.plcok.common.error.ErrorCode;
 import com.plcok.common.extension.FileExtension;
 import com.plcok.archive.dto.CreateArchiveRequest;
 import com.plcok.archive.repository.ArchiveRepository;
@@ -11,7 +13,10 @@ import com.plcok.archive.entity.Archive;
 import com.plcok.archive.entity.ArchiveAttach;
 import com.plcok.archive.entity.ArchiveTag;
 import com.plcok.common.storage.IStorageManager;
+import com.plcok.user.entity.Folder;
+import com.plcok.user.entity.FolderArchive;
 import com.plcok.user.entity.User;
+import com.plcok.user.repository.FolderArchiveRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.ExtensionMethod;
 import org.locationtech.jts.geom.Coordinate;
@@ -32,6 +37,7 @@ public class ArchiveService {
     private final IStorageManager storageManager;
     private final ArchiveRepository archiveRepository;
     private final GeometryFactory geometryFactory;
+    private final FolderArchiveRepository folderArchiveRepository;
 
     @Transactional(rollbackFor = IOException.class)
     public ArchiveResponse create(User author, CreateArchiveRequest request, List<MultipartFile> attaches) throws IOException {
@@ -109,5 +115,34 @@ public class ArchiveService {
                 .collect(archives.stream().map(ArchiveResponse::fromEntity).toList())
                 .meta(PaginateResponse.builder().count(archives.size()).build())
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public ArchiveCollectResponse getByFolder(User user, Folder folder) {
+        if (!folder.getUser().getId().equals(user.getId())) {
+            throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+        List<FolderArchive> folderArchives = folderArchiveRepository.getByFolder(folder);
+        return ArchiveCollectResponse.builder()
+                .collect(folderArchives.stream().map((fa) -> ArchiveResponse.fromEntity(fa.getArchive())).toList())
+                .meta(PaginateResponse.builder().count(folderArchives.size()).build())
+                .build();
+    }
+
+    @Transactional
+    public boolean changeIsPublic(User user, Archive archive) {
+        if (!archive.getUser().getId().equals(user.getId())) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED);
+        }
+        archive.changeIsPublic();
+        return archive.getIsPublic();
+    }
+
+    @Transactional
+    public void deleteArchive(User user, Archive archive) {
+        if (!archive.getUser().getId().equals(user.getId())) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED);
+        }
+        archiveRepository.delete(archive);
     }
 }

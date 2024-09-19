@@ -8,6 +8,7 @@ import com.plcok.archive.service.ArchiveService;
 import com.plcok.common.argumenthandler.Entity;
 import com.plcok.archive.entity.Archive;
 import com.plcok.common.service.ReportService;
+import com.plcok.user.entity.Folder;
 import com.plcok.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -85,6 +86,34 @@ public class ArchiveController {
             @AuthenticationPrincipal(errorOnInvalidType = true) User user
     ) {
         reportService.report(user, archive);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "폴더로 아카이브 조회")
+    @ApiResponse(responseCode = "200")
+    @GetMapping(path = "/folders/{folderId}/archives")
+    public ResponseEntity<ArchiveCollectResponse> getByFolder(@AuthenticationPrincipal User user,
+                                                              @Entity(name = "folderId") Folder folder,
+                                                              @PathVariable(name = "folderId") long ignoredFolderId) {
+        return ResponseEntity.ok(service.getByFolder(user, folder));
+    }
+
+    @Operation(summary = "공개/비공개 전환")
+    @ApiResponse(responseCode = "200")
+    @PatchMapping("/archives/{archiveId}/public")
+    public ResponseEntity<Boolean> changeIsPublic(@AuthenticationPrincipal User user,
+                                                  @Entity(name = "archiveId") Archive archive,
+                                                  @PathVariable(name = "archiveId") long ignoredAuthorId) {
+        return ResponseEntity.ok(service.changeIsPublic(user, archive));
+    }
+
+    @Operation(summary = "아카이브 삭제")
+    @ApiResponse(responseCode = "204")
+    @DeleteMapping("/archives/{archiveId}")
+    public ResponseEntity<Void> deleteArchive(@AuthenticationPrincipal User user,
+                                              @Entity(name = "archiveId") Archive archive,
+                                              @PathVariable(name = "archiveId") long ignoredAuthorId) {
+        service.deleteArchive(user, archive);
         return ResponseEntity.noContent().build();
     }
 }
