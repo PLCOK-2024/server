@@ -33,11 +33,11 @@ public class ArchiveChangeIsPublicAcceptanceTest extends AcceptanceTest {
     public void changeIsPublic_success() {
         var request = ArchiveFixture.defaultCreateArchiveRequest();
         var archiveResponse = ArchiveSteps.successCreateArchive(token, request);
-        ArchiveSteps.successChangeIsPublic(token, archiveResponse.getId());
+        ArchiveSteps.successChangeIsPublic(token, archiveResponse.getId(), false);
         var response = ArchiveSteps.successRetrieveById(token, archiveResponse.getId());
         assertThat(response.getIsPublic()).isFalse();
 
-        ArchiveSteps.successChangeIsPublic(token, archiveResponse.getId());
+        ArchiveSteps.successChangeIsPublic(token, archiveResponse.getId(), true);
         response = ArchiveSteps.successRetrieveById(token, archiveResponse.getId());
         assertThat(response.getIsPublic()).isTrue();
     }
@@ -48,7 +48,7 @@ public class ArchiveChangeIsPublicAcceptanceTest extends AcceptanceTest {
         String otherToken = UserSteps.testLogin(UserFixture.blockedUserLoginRequest()).getAccessToken();
         var request = ArchiveFixture.defaultCreateArchiveRequest();
         var archiveResponse = ArchiveSteps.successCreateArchive(token, request);
-        var error = ArchiveSteps.failChangeIsPublic(otherToken, archiveResponse.getId());
+        var error = ArchiveSteps.failChangeIsPublic(otherToken, archiveResponse.getId(), false);
         assertThat(error.getCode()).isEqualTo(ErrorCode.UNAUTHORIZED.getCode());
     }
 }

@@ -1,8 +1,6 @@
 package com.plcok.user.repository.folder;
 
 import com.plcok.user.dto.response.FolderResponse;
-import com.plcok.user.entity.QFolder;
-import com.plcok.user.entity.QFolderArchive;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +22,7 @@ public class FolderRepositoryImpl implements FolderRepositoryCustom{
                         .constructor(FolderResponse.class,
                             folder.id.as("id"),
                             folder.name,
-                            folderArchive.count().as("count")
+                            folderArchive.count().intValue().as("count")
                         )
                 )
                 .from(folder)

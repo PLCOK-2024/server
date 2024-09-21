@@ -2,27 +2,31 @@ package com.plcok.user.dto.response;
 
 import com.plcok.user.entity.Folder;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class FolderResponse {
 
     private Long id;
 
     private String name;
 
-    private Long count;
+    private int count;
 
-    public static FolderResponse from(Folder folder) {
-        return builder()
+    public static FolderResponse fromEntity(Folder folder) {
+        return fromEntity(folder, builder());
+    }
+
+    public static <T extends FolderResponse> T fromEntity(Folder folder, FolderResponse.FolderResponseBuilder<T, ?> builder) {
+        return builder
                 .id(folder.getId())
                 .name(folder.getName())
-                .count(0L)
+                .count(folder.getFolderArchives().size())
                 .build();
     }
 }

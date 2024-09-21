@@ -6,7 +6,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.Map;
 
-@Component("Google")
+@Component
 public class GoogleRequestBodyFactory implements OAuthRequestBodyFactory {
 
     @Value("${spring.security.oauth2.client.registration.google.client-id}")

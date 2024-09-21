@@ -2,6 +2,7 @@ package com.plcok.archive.entity;
 
 import com.plcok.common.BaseEntity;
 import com.plcok.common.entity.IReportable;
+import com.plcok.user.entity.FolderArchive;
 import com.plcok.user.entity.User;
 import com.plcok.common.entity.enumerated.ResourceType;
 import jakarta.persistence.*;
@@ -58,22 +59,26 @@ public class Archive extends BaseEntity implements IReportable {
 
     @NotNull
     @Column(name = "is_public", nullable = false)
+    @Setter
     private Boolean isPublic = false;
 
     @OneToMany(mappedBy = "archive", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OrderBy("sequence desc")
     private List<ArchiveAttach> archiveAttaches = new ArrayList<>();
 
-    @OneToMany(mappedBy = "archive")
+    @OneToMany(mappedBy = "archive", cascade = CascadeType.ALL)
     private Set<ArchiveComment> archiveComments = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "archive")
+    @OneToMany(mappedBy = "archive", cascade = CascadeType.ALL)
     private Set<ArchiveReaction> archiveReactions = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "archive", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OrderBy("sequence desc")
     private List<ArchiveTag> tags = new ArrayList<>();
 
+    @OneToMany(mappedBy = "archive", cascade = CascadeType.ALL)
+    private List<FolderArchive> folderArchives = new ArrayList<>();
+    
     @Override
     public User getUser() {
         return author;
@@ -82,9 +87,5 @@ public class Archive extends BaseEntity implements IReportable {
     @Override
     public ResourceType getResourceType() {
         return ResourceType.ARCHIVE;
-    }
-
-    public void changeIsPublic() {
-        this.isPublic = !this.isPublic;
     }
 }
