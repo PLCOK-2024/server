@@ -3,6 +3,7 @@ package com.plcok.archive.repository;
 import com.plcok.archive.dto.ArchiveRetrieveRequest;
 import com.plcok.archive.entity.Archive;
 import com.plcok.archive.entity.QArchive;
+import com.plcok.archive.entity.QArchiveTag;
 import com.plcok.user.entity.QBlock;
 import com.plcok.user.entity.QFollower;
 import com.plcok.user.entity.QUser;
@@ -63,6 +64,15 @@ public class ArchiveRepositoryImpl implements ArchiveRepositoryCustom {
                     request.getFollow() ? subQuery.exists() : subQuery.notExists()
             );
         }
+
+        // 태그 검색
+        if (request.getTag() != null) {
+            var subQuery = JPAExpressions.selectFrom(QArchiveTag.archiveTag)
+                    .where(QArchiveTag.archiveTag.archive.eq(QArchive.archive))
+                    .where(QArchiveTag.archiveTag.name.eq(request.getTag()));
+
+            query.where(subQuery.exists());
+    }
 
         return query.fetch();
     }
