@@ -1,5 +1,6 @@
 package com.plcok.common.storage;
 
+import com.azure.storage.blob.BlobContainerClient;
 import com.plcok.common.extension.FileExtension;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.ExtensionMethod;
@@ -16,10 +17,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @ExtensionMethod(FileExtension.class)
 public class AzureStorageManager implements IStorageManager {
+    @Value("${spring.cloud.azure.storage.blob.container-name}")
+    String containerName;
+
     private final ResourceLoader resourceLoader;
 
-    @Value("${spring.cloud.azure.storage.blob.container-name}")
-    String containerName = null;
+    private final BlobContainerClient blobContainerClient;
 
     private WritableResource getResource(String name) {
         return (WritableResource) resourceLoader.getResource(String.format("azure-blob://%s/%s", containerName, name));
@@ -32,6 +35,12 @@ public class AzureStorageManager implements IStorageManager {
         stream.write(file.getBytes());
         stream.close();
 
-        return resource.getURL().toString();
+        return resource.getFilename();
+    }
+
+    @Override
+    public boolean remove(String path) {
+        var blobClient = blobContainerClient.getBlobClient(path);
+        return blobClient.deleteIfExists();
     }
 }
