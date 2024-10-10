@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import java.net.MalformedURLException;
-
 @Component
 public class ArchiveAttachListener {
     private IStorageManager storageManager;
@@ -19,7 +17,7 @@ public class ArchiveAttachListener {
     }
 
     @PreRemove
-    public void postRemove(ArchiveAttach archiveAttach) throws MalformedURLException {
+    public void postRemove(ArchiveAttach archiveAttach) {
         storageManager.remove(archiveAttach.getPath());
     }
 }
