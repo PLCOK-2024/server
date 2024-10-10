@@ -1,5 +1,6 @@
 package com.plcok.archive.entity;
 
+import com.plcok.archive.entity.listener.ArchiveAttachListener;
 import com.plcok.common.BaseEntity;
 import com.plcok.common.entity.IReportable;
 import com.plcok.user.entity.FolderArchive;
@@ -11,6 +12,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.locationtech.jts.geom.Point;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -23,7 +25,6 @@ import java.util.Set;
 @Table(name = "archives")
 @AttributeOverrides({
         @AttributeOverride(name = "createdAt", column = @Column(name = "created_at", nullable = false)),
-        @AttributeOverride(name = "updatedAt", column = @Column(name = "updated_at"))
 })
 @NoArgsConstructor
 @AllArgsConstructor
@@ -88,4 +89,8 @@ public class Archive extends BaseEntity implements IReportable {
     public ResourceType getResourceType() {
         return ResourceType.ARCHIVE;
     }
+
+    @NotNull
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 }

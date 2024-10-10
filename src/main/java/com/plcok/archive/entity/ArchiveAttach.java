@@ -1,5 +1,6 @@
 package com.plcok.archive.entity;
 
+import com.plcok.archive.entity.listener.ArchiveAttachListener;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,6 +13,7 @@ import lombok.*;
 @Table(name = "archive_attaches")
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(ArchiveAttachListener.class)
 public class ArchiveAttach {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,5 +44,4 @@ public class ArchiveAttach {
 
     @Column(name = "height")
     private Integer height;
-
 }
