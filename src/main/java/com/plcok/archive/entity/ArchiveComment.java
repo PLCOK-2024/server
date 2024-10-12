@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,6 @@ import java.util.List;
 @Table(name = "archive_comments")
 @AttributeOverrides({
         @AttributeOverride(name = "createdAt", column = @Column(name = "created_at", nullable = false)),
-        @AttributeOverride(name = "updatedAt", column = @Column(name = "updated_at"))
 })
 @NoArgsConstructor
 @AllArgsConstructor
@@ -56,4 +56,8 @@ public class ArchiveComment extends BaseEntity implements IReportable {
     public ResourceType getResourceType() {
         return ResourceType.COMMENT;
     }
+
+    @NotNull
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 }
