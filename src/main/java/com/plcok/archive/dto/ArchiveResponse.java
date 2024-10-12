@@ -4,6 +4,7 @@ import com.plcok.archive.entity.Archive;
 import com.plcok.user.dto.UserResponse;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -27,6 +28,8 @@ public class ArchiveResponse {
 
     private Boolean isPublic;
 
+    private LocalDateTime createdAt;
+
     private List<AttachResponse> archiveAttaches;
 
     private List<ArchiveTagResponse> tags;
@@ -41,6 +44,7 @@ public class ArchiveResponse {
                 .name(archive.getName())
                 .content(archive.getContent())
                 .isPublic(archive.getIsPublic())
+                .createdAt(archive.getCreatedAt())
                 .archiveAttaches(archive.getArchiveAttaches().stream().map(AttachResponse::fromEntity).toList())
                 .tags(archive.getTags().stream().map(ArchiveTagResponse::fromEntity).toList())
                 .build();

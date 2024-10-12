@@ -72,8 +72,8 @@ public class ArchiveRepositoryImpl implements ArchiveRepositoryCustom {
                     .where(QArchiveTag.archiveTag.name.eq(request.getTag()));
 
             query.where(subQuery.exists());
-    }
+        }
 
-        return query.fetch();
+        return query.orderBy(QArchive.archive.createdAt.desc()).fetch();
     }
 }
