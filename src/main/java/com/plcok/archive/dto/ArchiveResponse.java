@@ -34,7 +34,7 @@ public class ArchiveResponse {
     public static ArchiveResponse fromEntity(Archive archive) {
         return builder()
                 .id(archive.getId())
-                .author(UserResponse.from(archive.getAuthor()))
+                .author(UserResponse.fromEntity(archive.getAuthor()))
                 .positionX(archive.getPositionX())
                 .positionY(archive.getPositionY())
                 .address(archive.getAddress())

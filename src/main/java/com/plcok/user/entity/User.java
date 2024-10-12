@@ -1,5 +1,6 @@
 package com.plcok.user.entity;
 
+import com.plcok.archive.entity.Archive;
 import com.plcok.common.BaseEntity;
 import com.plcok.common.entity.IReportable;
 import com.plcok.common.entity.enumerated.ResourceType;
@@ -32,6 +33,12 @@ public class User extends BaseEntity implements UserDetails, IReportable {
     private String profileImage;
 
     private String description;
+
+    @OneToMany(mappedBy = "author")
+    private List<Archive> archives;
+
+    @OneToMany(mappedBy = "follow")
+    private List<Follower> followers;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "ROLE", nullable = false)

@@ -11,4 +11,6 @@ public interface FollowerRepository extends JpaRepository<Follower, Long> {
     @Modifying
     @Transactional
     int deleteByFollowerAndFollow(@Param("follower") User follower, @Param("follow") User follow);
+
+    boolean existsByFollowerAndFollow(@Param("follower") User follower, @Param("follow") User follow);
 }
