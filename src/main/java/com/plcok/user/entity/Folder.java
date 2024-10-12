@@ -34,7 +34,7 @@ public class Folder extends BaseEntity {
     @Setter
     private boolean isPublic = false;
 
-    @OneToMany(mappedBy = "folder")
+    @OneToMany(mappedBy = "folder", cascade = CascadeType.REMOVE)
     private List<FolderArchive> folderArchives;
 
     public static Folder of(User user, CreateFolderRequest request) {

@@ -74,4 +74,14 @@ public class FolderController {
                                                   @PathVariable(name = "isPublic") boolean isPublic) {
         return ResponseEntity.ok(folderService.changeIsPublic(user, folder, isPublic));
     }
+
+    @Operation(summary = "폴더 삭제")
+    @ApiResponse(responseCode = "204")
+    @DeleteMapping("/{folderId}")
+    public ResponseEntity<Void> deleteFolder(@AuthenticationPrincipal User user,
+                                             @Entity(name = "folderId") Folder folder,
+                                             @PathVariable(name = "folderId") long ignoredFolderId) {
+        folderService.deleteFolder(user, folder);
+        return ResponseEntity.noContent().build();
+    }
 }

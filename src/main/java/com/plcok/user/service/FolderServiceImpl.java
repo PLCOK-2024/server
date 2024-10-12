@@ -68,4 +68,10 @@ public class FolderServiceImpl implements FolderService {
         folder.setPublic(isPublic);
         return folder.isPublic();
     }
+
+    @Override
+    @Transactional
+    public void deleteFolder(User user, Folder folder) {
+        folderRepository.delete(folder);
+    }
 }
