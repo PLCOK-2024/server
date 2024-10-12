@@ -28,7 +28,7 @@ public class FolderServiceImpl implements FolderService {
     @Override
     @Transactional
     public FolderResponse createFolder(User user, CreateFolderRequest request) {
-        return FolderResponse.fromEntity(folderRepository.save(Folder.of(user, request.getName())));
+        return FolderResponse.fromEntity(folderRepository.save(Folder.of(user, request)));
     }
 
     @Override
@@ -60,5 +60,12 @@ public class FolderServiceImpl implements FolderService {
             throw new BusinessException(ErrorCode.FOLDERARCHIVE_ALREADY_REMOVED);
         }
         folderArchiveRepository.deleteByFolderIdAndArchiveId(folder.getId(), archive.getId());
+    }
+
+    @Override
+    @Transactional
+    public Boolean changeIsPublic(User user, Folder folder, boolean isPublic) {
+        folder.setPublic(isPublic);
+        return folder.isPublic();
     }
 }

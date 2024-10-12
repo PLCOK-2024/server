@@ -31,16 +31,14 @@ public class FolderController {
     @PostMapping
     public ResponseEntity<FolderResponse> createFolder(@AuthenticationPrincipal(errorOnInvalidType = true) User user,
                                                        @RequestBody @Valid CreateFolderRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(folderService.createFolder(user, request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(folderService.createFolder(user, request));
     }
 
     @Operation(summary = "폴더 리스트 조회")
     @ApiResponse(responseCode = "200")
     @GetMapping
     public ResponseEntity<FolderCollectResponse> getFolderList(@AuthenticationPrincipal(errorOnInvalidType = true) User user) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(folderService.getFolderList(user));
+        return ResponseEntity.ok(folderService.getFolderList(user));
     }
 
     @Operation(summary = "아카이브 폴더에 등록")
@@ -52,7 +50,7 @@ public class FolderController {
                                                              @PathVariable(name = "archiveId") long ignoredArchiveId,
                                                              @Entity(name = "archiveId") Archive archive) {
         folderService.addArchiveToFolder(user, folder, archive);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "아카이브 폴더에서 삭제")
@@ -64,6 +62,16 @@ public class FolderController {
                                                         @PathVariable(name = "archiveId") long ignoredArchiveId,
                                                         @Entity(name = "archiveId") Archive archive) {
         folderService.removeArchiveFromFolder(user, folder, archive);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "폴더 공개/비공개 전환")
+    @ApiResponse(responseCode = "200")
+    @PatchMapping("/{folderId}/public/{isPublic}")
+    public ResponseEntity<Boolean> changeIsPublic(@AuthenticationPrincipal User user,
+                                                  @Entity(name = "folderId") Folder folder,
+                                                  @PathVariable(name = "folderId") long ignoredFolderId,
+                                                  @PathVariable(name = "isPublic") boolean isPublic) {
+        return ResponseEntity.ok(folderService.changeIsPublic(user, folder, isPublic));
     }
 }

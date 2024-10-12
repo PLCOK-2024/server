@@ -46,7 +46,7 @@ public class ArchiveAspect {
             return joinPoint.proceed();
         }
 
-        if (user == null || !archive.getAuthor().getId().equals(user.getId())) {
+        if (user == null || !archive.getUser().getId().equals(user.getId())) {
             throw new EntityNotFoundException(ErrorCode.ENTITY_NOT_FOUND, String.format("archive (%s) is private", archive.getId()));
         }
 

@@ -24,13 +24,10 @@ public class UserAspect {
 
         Folder folder = null;
         User user = null;
-        Archive archive = null;
         for (int i = 0; i < args.length; i++) {
             var arg = args[i];
             if (arg instanceof Folder f) {
                 folder = f;
-            } else if (arg instanceof Archive a) {
-                archive = a;
             } else if (arg instanceof User u && parameters[i].getAnnotation(AuthenticationPrincipal.class) != null) {
                 user = u;
             }
@@ -42,10 +39,6 @@ public class UserAspect {
 
         if (user == null || !folder.getUser().getId().equals(user.getId())) {
             throw new EntityNotFoundException(ErrorCode.ENTITY_NOT_FOUND, String.format("folder (%s) is private", folder.getId()));
-        }
-
-        if (user == null || !archive.getUser().getId().equals(user.getId())) {
-            throw new EntityNotFoundException(ErrorCode.ENTITY_NOT_FOUND, String.format("archive (%s) is not mine", archive.getId()));
         }
 
         return joinPoint.proceed();
