@@ -5,7 +5,9 @@ import com.plcok.archive.entity.enumerated.ReactionType;
 import com.plcok.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -15,6 +17,8 @@ import lombok.Setter;
 @AttributeOverrides({
         @AttributeOverride(name = "createdAt", column = @Column(name = "created_at", nullable = false))
 })
+@NoArgsConstructor
+@AllArgsConstructor
 public class ArchiveReaction extends BaseEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
