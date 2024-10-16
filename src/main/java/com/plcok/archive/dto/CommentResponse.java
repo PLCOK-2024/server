@@ -1,6 +1,7 @@
 package com.plcok.archive.dto;
 
 import com.plcok.archive.entity.ArchiveComment;
+import com.plcok.user.dto.UserResponse;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -13,9 +14,7 @@ public class CommentResponse {
 
     private String content;
 
-    private long userId;
-
-    private String nickname;
+    private UserResponse author;
 
     private LocalDateTime createdAt;
 
@@ -29,8 +28,7 @@ public class CommentResponse {
         return builder
                 .id(comment.getId())
                 .content(comment.getContent())
-                .userId(comment.getUser().getId())
-                .nickname(comment.getUser().getNickname())
+                .author(UserResponse.from(comment.getUser()))
                 .createdAt(comment.getCreatedAt())
                 .updatedAt(comment.getUpdatedAt())
                 .build();
