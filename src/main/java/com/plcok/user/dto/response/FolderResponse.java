@@ -16,6 +16,8 @@ public class FolderResponse {
 
     private String name;
 
+    private boolean isPublic;
+
     private int count;
 
     public static FolderResponse fromEntity(Folder folder) {
@@ -26,6 +28,7 @@ public class FolderResponse {
         return builder
                 .id(folder.getId())
                 .name(folder.getName())
+                .isPublic(folder.isPublic())
                 .count(folder.getFolderArchives().size())
                 .build();
     }

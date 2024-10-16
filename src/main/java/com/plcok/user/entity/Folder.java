@@ -1,12 +1,10 @@
 package com.plcok.user.entity;
 
 import com.plcok.common.BaseEntity;
+import com.plcok.user.dto.request.CreateFolderRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
@@ -31,16 +29,20 @@ public class Folder extends BaseEntity {
     @NotNull
     private String name;
 
-    @OneToMany(mappedBy = "folder")
+    @NotNull
+    @Column(name = "is_public", nullable = false)
+    @Setter
+    private boolean isPublic = false;
+
+    @OneToMany(mappedBy = "folder", cascade = CascadeType.REMOVE)
     private List<FolderArchive> folderArchives;
 
-    public static Folder of(User user, String name) {
+    public static Folder of(User user, CreateFolderRequest request) {
         return builder()
                 .user(user)
-                .name(name)
+                .name(request.getName())
+                .isPublic(request.isPublic())
                 .folderArchives(new ArrayList<>())
                 .build();
     }
 }
-
-

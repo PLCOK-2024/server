@@ -22,6 +22,7 @@ public class FolderRepositoryImpl implements FolderRepositoryCustom{
                         .constructor(FolderResponse.class,
                             folder.id.as("id"),
                             folder.name,
+                            folder.isPublic,
                             folderArchive.count().intValue().as("count")
                         )
                 )

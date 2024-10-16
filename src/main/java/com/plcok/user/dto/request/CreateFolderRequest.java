@@ -12,4 +12,7 @@ import lombok.NoArgsConstructor;
 public class CreateFolderRequest {
 
     private String name;
+
+    @Builder.Default
+    private boolean isPublic = true;
 }

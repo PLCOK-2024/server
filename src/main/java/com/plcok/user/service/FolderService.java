@@ -16,4 +16,8 @@ public interface FolderService {
     void addArchiveToFolder(User user, Folder folder, Archive archive);
 
     void removeArchiveFromFolder(User user, Folder folder, Archive archive);
+
+    Boolean changeIsPublic(User user, Folder folder, boolean isPublic);
+
+    void deleteFolder(User user, Folder folder);
 }
