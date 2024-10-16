@@ -27,6 +27,8 @@ public class User extends BaseEntity implements UserDetails, IReportable {
 
     private String name;
 
+    private String nickname;
+
     private String password;
 
     private String profileImage;
