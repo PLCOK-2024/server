@@ -128,23 +128,18 @@ public class ArchiveController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "아카이브 좋아요")
+    @Operation(summary = "아카이브 좋아요/좋아요 취소")
     @ApiResponse(responseCode = "204")
-    @PostMapping("/archives/{archiveId}/like")
+    @PostMapping("/archives/{archiveId}/like/{isLike}")
     public ResponseEntity<Void> like(@AuthenticationPrincipal User user,
                                      @Entity(name = "archiveId") Archive archive,
-                                     @PathVariable(name = "archiveId") long ignoredArchiveId) {
-        service.like(user, archive);
-        return ResponseEntity.noContent().build();
-    }
-
-    @Operation(summary = "아카이브 좋아요 해제")
-    @ApiResponse(responseCode = "204")
-    @DeleteMapping("/archives/{archiveId}/dislike")
-    public ResponseEntity<Void> dislike(@AuthenticationPrincipal User user,
-                                        @Entity(name = "archiveId") Archive archive,
-                                        @PathVariable(name = "archiveId") long ignoredArchiveId) {
-        service.dislike(user, archive);
+                                     @PathVariable(name = "archiveId") long ignoredArchiveId,
+                                     @PathVariable(name = "isLike") boolean isLike) {
+        if (isLike) {
+            service.like(user, archive);
+        } else {
+            service.dislike(user, archive);
+        }
         return ResponseEntity.noContent().build();
     }
 }
