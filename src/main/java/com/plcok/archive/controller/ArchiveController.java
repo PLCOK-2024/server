@@ -127,4 +127,19 @@ public class ArchiveController {
         service.deleteArchive(user, archive);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "아카이브 좋아요/좋아요 취소")
+    @ApiResponse(responseCode = "204")
+    @PostMapping("/archives/{archiveId}/like/{isLike}")
+    public ResponseEntity<Void> like(@AuthenticationPrincipal User user,
+                                     @Entity(name = "archiveId") Archive archive,
+                                     @PathVariable(name = "archiveId") long ignoredArchiveId,
+                                     @PathVariable(name = "isLike") boolean isLike) {
+        if (isLike) {
+            service.like(user, archive);
+        } else {
+            service.dislike(user, archive);
+        }
+        return ResponseEntity.noContent().build();
+    }
 }

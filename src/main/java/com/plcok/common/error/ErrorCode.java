@@ -31,7 +31,8 @@ public enum ErrorCode {
 
     // Archive
     ARCHIVE_NOT_FOUND(404, "A001", "Archive not found"),
-
+    ALREADY_LIKE_ARCHIVE(400, "A002", "Already like archive"),
+    ALREADY_DISLIKE_ARCHIVE(400, "A003", "Already dislike archive"),
 
     // 차단
     USER_ALREADY_BLOCKED(400, "B001", "Already Blocked user"),

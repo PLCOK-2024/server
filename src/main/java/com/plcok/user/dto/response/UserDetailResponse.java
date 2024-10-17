@@ -1,23 +1,34 @@
 package com.plcok.user.dto.response;
 
+import com.plcok.user.dto.UserResponse;
 import com.plcok.user.entity.User;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDetailResponse {
-    private Long id;
-    private String email;
+public class UserDetailResponse extends UserResponse {
 
-    public static UserDetailResponse from(User user) {
-        return UserDetailResponse.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .build();
+    private String description;
+
+    private boolean isFollow;
+
+    private int followerCnt;
+
+    private int archiveCnt;
+
+    public static UserDetailResponse fromEntity(User user, boolean isFollow) {
+        return fromEntity(
+                user,
+                builder()
+                    .description(user.getDescription())
+                    .isFollow(isFollow)
+                    .followerCnt(user.getFollowers().size())
+                    .archiveCnt(user.getArchives().size())
+        );
     }
 }

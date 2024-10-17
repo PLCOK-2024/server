@@ -4,6 +4,7 @@ import com.plcok.common.argumenthandler.Entity;
 import com.plcok.user.dto.UserCollectResponse;
 import com.plcok.user.dto.UserResponse;
 import com.plcok.user.dto.UserRetrieveRequest;
+import com.plcok.user.dto.response.UserDetailResponse;
 import com.plcok.user.entity.User;
 import com.plcok.user.dto.request.SignupRequest;
 import com.plcok.user.service.UserService;
@@ -52,19 +53,20 @@ public class UserController {
 
     @Operation(summary = "로그인된 회원 조회")
     @GetMapping("/@me")
-    public ResponseEntity<UserResponse> me(
+    public ResponseEntity<UserDetailResponse> me(
             @AuthenticationPrincipal(errorOnInvalidType = true) User user
     ) {
-        return ResponseEntity.ok(userService.find(user, true));
+        return ResponseEntity.ok(userService.find(user, user));
     }
 
     @Operation(summary = "회원 상세 조회")
     @GetMapping("/{userId}")
-    public ResponseEntity<UserResponse> getUserDetail(
+    public ResponseEntity<UserDetailResponse> getUserDetail(
+            @AuthenticationPrincipal(errorOnInvalidType = true) User user,
             @PathVariable(name = "userId") long ignoredUserId,
-            @Entity(name = "userId") User user
+            @Entity(name = "userId") User target
     ) {
-        return ResponseEntity.ok(userService.find(user));
+        return ResponseEntity.ok(userService.find(user, target));
     }
     //endregion
 

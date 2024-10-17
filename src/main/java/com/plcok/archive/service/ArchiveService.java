@@ -3,6 +3,9 @@ package com.plcok.archive.service;
 import com.plcok.archive.dto.ArchiveCollectResponse;
 import com.plcok.archive.dto.ArchiveResponse;
 import com.plcok.archive.dto.ArchiveRetrieveRequest;
+import com.plcok.archive.entity.ArchiveReaction;
+import com.plcok.archive.entity.enumerated.ReactionType;
+import com.plcok.archive.repository.ArchiveReactionRepository;
 import com.plcok.common.error.BusinessException;
 import com.plcok.common.error.ErrorCode;
 import com.plcok.common.extension.FileExtension;
@@ -18,7 +21,6 @@ import com.plcok.user.entity.Folder;
 import com.plcok.user.entity.FolderArchive;
 import com.plcok.user.entity.User;
 import com.plcok.user.repository.FolderArchiveRepository;
-import com.plcok.user.repository.folder.FolderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.ExtensionMethod;
 import org.locationtech.jts.geom.Coordinate;
@@ -30,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -40,7 +43,7 @@ public class ArchiveService {
     private final ArchiveRepository archiveRepository;
     private final GeometryFactory geometryFactory;
     private final FolderArchiveRepository folderArchiveRepository;
-    private final FolderRepository folderRepository;
+    private final ArchiveReactionRepository archiveReactionRepository;
 
     @Transactional(rollbackFor = IOException.class)
     public ArchiveResponse create(User author, CreateArchiveRequest request, List<MultipartFile> attaches) throws IOException {
@@ -149,5 +152,23 @@ public class ArchiveService {
     @Transactional
     public void deleteArchive(User user, Archive archive) {
         archiveRepository.delete(archive);
+    }
+
+    @Transactional
+    public void like(User user, Archive archive) {
+        Optional<ArchiveReaction> archiveReactionOptional = archiveReactionRepository.findByAuthorAndArchive(user, archive);
+        if (archiveReactionOptional.isPresent()) {
+            throw new BusinessException(ErrorCode.ALREADY_LIKE_ARCHIVE);
+        }
+        archiveReactionRepository.save(new ArchiveReaction(archive, user, ReactionType.LIKE));
+    }
+
+    @Transactional
+    public void dislike(User user, Archive archive) {
+        Optional<ArchiveReaction> archiveReactionOptional = archiveReactionRepository.findByAuthorAndArchive(user, archive);
+        if (archiveReactionOptional.isEmpty()) {
+            throw new BusinessException(ErrorCode.ALREADY_DISLIKE_ARCHIVE);
+        }
+        archiveReactionRepository.delete(archiveReactionOptional.get());
     }
 }
