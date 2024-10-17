@@ -28,7 +28,7 @@ public class CommentResponse {
         return builder
                 .id(comment.getId())
                 .content(comment.getContent())
-                .author(UserResponse.from(comment.getUser()))
+                .author(UserResponse.fromEntity(comment.getUser()))
                 .createdAt(comment.getCreatedAt())
                 .updatedAt(comment.getUpdatedAt())
                 .build();
