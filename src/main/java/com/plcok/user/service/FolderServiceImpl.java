@@ -10,6 +10,7 @@ import com.plcok.user.entity.Folder;
 import com.plcok.user.entity.FolderArchive;
 import com.plcok.user.entity.User;
 import com.plcok.user.repository.FolderArchiveRepository;
+import com.plcok.user.repository.FollowerRepository;
 import com.plcok.user.repository.folder.FolderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class FolderServiceImpl implements FolderService {
     private final FolderRepository folderRepository;
 
     private final FolderArchiveRepository folderArchiveRepository;
+    private final FollowerRepository followerRepository;
 
     @Override
     @Transactional
@@ -42,20 +44,21 @@ public class FolderServiceImpl implements FolderService {
     @Override
     @Transactional
     public void addArchiveToFolder(User user, Folder folder, Archive archive) {
-        Optional<FolderArchive> folderArchiveOptional = folderArchiveRepository
-                .findByFolderIdAndArchiveId(folder.getId(), archive.getId());
+        boolean isFollow = followerRepository.existsByFollowerAndFollow(user, archive.getAuthor());
+        if (!isFollow && !user.getId().equals(archive.getAuthor().getId())) {
+            throw new BusinessException(ErrorCode.ONLY_ADDABLE_FOLLOWERS_ARCHIVE);
+        }
+        Optional<FolderArchive> folderArchiveOptional = folderArchiveRepository.findByFolderIdAndArchiveId(folder.getId(), archive.getId());
         if (folderArchiveOptional.isPresent()) {
             throw new BusinessException(ErrorCode.FOLDERARCHIVE_ALREADY_ADDED);
         }
-        FolderArchive folderArchive = FolderArchive.of(folder, archive);
-        folderArchiveRepository.save(folderArchive);
+        folderArchiveRepository.save(FolderArchive.of(folder, archive));
     }
 
     @Override
     @Transactional
     public void removeArchiveFromFolder(User user, Folder folder, Archive archive) {
-        Optional<FolderArchive> folderArchiveOptional = folderArchiveRepository
-                .findByFolderIdAndArchiveId(folder.getId(), archive.getId());
+        Optional<FolderArchive> folderArchiveOptional = folderArchiveRepository.findByFolderIdAndArchiveId(folder.getId(), archive.getId());
         if (folderArchiveOptional.isEmpty()) {
             throw new BusinessException(ErrorCode.FOLDERARCHIVE_ALREADY_REMOVED);
         }

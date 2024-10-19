@@ -6,7 +6,6 @@ import com.plcok.archive.entity.QArchive;
 import com.plcok.archive.entity.QArchiveTag;
 import com.plcok.user.entity.QBlock;
 import com.plcok.user.entity.QFollower;
-import com.plcok.user.entity.QUser;
 import com.plcok.user.entity.User;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
