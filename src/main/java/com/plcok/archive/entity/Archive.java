@@ -1,6 +1,5 @@
 package com.plcok.archive.entity;
 
-import com.plcok.archive.entity.listener.ArchiveAttachListener;
 import com.plcok.common.BaseEntity;
 import com.plcok.common.entity.IReportable;
 import com.plcok.user.entity.FolderArchive;
@@ -90,7 +89,6 @@ public class Archive extends BaseEntity implements IReportable {
         return ResourceType.ARCHIVE;
     }
 
-    @NotNull
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 }

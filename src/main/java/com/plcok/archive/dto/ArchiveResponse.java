@@ -6,7 +6,9 @@ import com.plcok.user.dto.UserResponse;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Builder
@@ -49,7 +51,10 @@ public class ArchiveResponse {
                 .name(archive.getName())
                 .content(archive.getContent())
                 .isPublic(archive.getIsPublic())
-                .likeCount(archive.getArchiveReactions().stream().filter(ar -> ar.getReactionType() == ReactionType.LIKE).toList().size())
+                .likeCount(Optional.ofNullable(archive.getArchiveReactions())
+                        .orElse(Collections.emptySet()).stream()
+                        .filter(ar -> ar.getReactionType() == ReactionType.LIKE)
+                        .toList().size())
                 .isLike(isLike)
                 .createdAt(archive.getCreatedAt())
                 .archiveAttaches(archive.getArchiveAttaches().stream().map(AttachResponse::fromEntity).toList())
