@@ -21,12 +21,12 @@ public class OAuth2Attributes {
     private String providerUserId;
 
     public static OAuth2Attributes ofKakao(Map<String, Object> attributes) {
-//        Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
-//        String email = String.valueOf(kakaoAccount.get("email"));
+        Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+        String email = String.valueOf(kakaoAccount.get("email"));
         String providerUserId = String.valueOf(attributes.get("id"));
 
         return builder()
-//                .email(email)
+                .email(email)
                 .providerType(ProviderType.KAKAO)
                 .providerUserId(providerUserId)
                 .build();

@@ -4,6 +4,7 @@ import com.plcok.archive.entity.Archive;
 import com.plcok.common.BaseEntity;
 import com.plcok.common.entity.IReportable;
 import com.plcok.common.entity.enumerated.ResourceType;
+import com.plcok.common.oauth.OAuth2Attributes;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -27,8 +28,6 @@ public class User extends BaseEntity implements UserDetails, IReportable {
     private String email;
 
     private String name;
-
-    private String nickname;
 
     private String password;
 
@@ -71,5 +70,11 @@ public class User extends BaseEntity implements UserDetails, IReportable {
     @Override
     public ResourceType getResourceType() {
         return ResourceType.USER;
+    }
+
+    public static User from(OAuth2Attributes attributes) {
+        return builder()
+                .email(attributes.getEmail())
+                .build();
     }
 }

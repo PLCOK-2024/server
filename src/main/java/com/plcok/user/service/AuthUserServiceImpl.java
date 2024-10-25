@@ -14,10 +14,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
@@ -41,21 +38,27 @@ public class AuthUserServiceImpl implements AuthUserService {
     public SocialLoginResponse login(String token, OAuthRequestBodyFactory factory) {
         Map<String, Object> map = getUserAttributes(factory, token);
         OAuth2Attributes attributes = factory.createOauthAttribute(map);
-
-        User user = findOrCreateUser(attributes);
-        return SocialLoginResponse
-                .from(jwtUtil.createToken(user.getId(), user.getRole(), user.getCreatedAt()));
+        return processUserLogin(attributes);
     }
 
-    private User findOrCreateUser(OAuth2Attributes attributes) {
-        return userProviderRepository.findByProviderTypeAndProviderUserId(attributes.getProviderType(), attributes.getProviderUserId())
-                .map(UserProvider::getUser)
-                .orElseGet(() -> createUser(attributes));
+    private SocialLoginResponse processUserLogin(OAuth2Attributes attributes) {
+        return userProviderRepository
+                .findByProviderTypeAndProviderUserId(attributes.getProviderType(), attributes.getProviderUserId())
+                .map(existingProvider -> buildLoginResponse(existingProvider.getUser()))
+                .orElseGet(() -> buildNewUserResponse(attributes));
     }
 
-    private User createUser(OAuth2Attributes attributes) {
-        User user = new User();
-        userRepository.save(user);
+    private SocialLoginResponse buildLoginResponse(User user) {
+        return SocialLoginResponse.from(jwtUtil.createToken(user), HttpStatus.OK, 200);
+    }
+
+    private SocialLoginResponse buildNewUserResponse(OAuth2Attributes attributes) {
+        User user = registerNewUser(attributes);
+        return SocialLoginResponse.from(jwtUtil.createToken(user), HttpStatus.CREATED, 201);
+    }
+
+    private User registerNewUser(OAuth2Attributes attributes) {
+        User user = userRepository.save(User.from(attributes));
         UserProvider userProvider = UserProvider.of(attributes.getProviderType(), user, attributes.getProviderUserId());
         userProviderRepository.save(userProvider);
         return user;

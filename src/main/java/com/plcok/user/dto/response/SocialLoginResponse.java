@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @NoArgsConstructor
@@ -13,7 +14,15 @@ public class SocialLoginResponse {
 
     private String accessToken;
 
-    public static SocialLoginResponse from(String accessToken) {
-        return builder().accessToken(accessToken).build();
+    private HttpStatus status;
+
+    private int code;
+
+    public static SocialLoginResponse from(String accessToken, HttpStatus status, int code) {
+        return builder()
+                .accessToken(accessToken)
+                .status(status)
+                .code(code)
+                .build();
     }
 }
