@@ -21,6 +21,7 @@ import com.plcok.user.entity.Folder;
 import com.plcok.user.entity.FolderArchive;
 import com.plcok.user.entity.User;
 import com.plcok.user.repository.FolderArchiveRepository;
+import com.plcok.user.repository.FollowerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.ExtensionMethod;
 import org.locationtech.jts.geom.Coordinate;
@@ -30,10 +31,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toSet;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +46,7 @@ public class ArchiveService {
     private final GeometryFactory geometryFactory;
     private final FolderArchiveRepository folderArchiveRepository;
     private final ArchiveReactionRepository archiveReactionRepository;
+    private final FollowerRepository followerRepository;
 
     @Transactional(rollbackFor = IOException.class)
     public ArchiveResponse create(User author, CreateArchiveRequest request, List<MultipartFile> attaches) throws IOException {
@@ -92,20 +95,46 @@ public class ArchiveService {
                 ).toList()
         );
 
-        return ArchiveResponse.fromEntity(archive);
+        return ArchiveResponse.fromEntity(archive, false, false);
     }
 
     @Transactional(readOnly = true)
     public ArchiveCollectResponse retrieve(User author, ArchiveRetrieveRequest request) {
         var archives = archiveRepository.retrieve(author, request);
+
+        Set<Long> authorIds = new HashSet<>();
+        Set<Long> archiveIds = new HashSet<>();
+        archives.forEach(a -> {
+            authorIds.add(a.getAuthor().getId());
+            archiveIds.add(a.getId());
+        });
+
+        Map<Long, Boolean> isFollowMap = getIsFollowMap(author, authorIds);
+        Map<Long, Boolean> isLikeMap = getIsLikeMap(author, archiveIds);
+
         return ArchiveCollectResponse.builder()
-                .collect(archives.stream().map(ArchiveResponse::fromEntity).toList())
+                .collect(archives
+                        .stream()
+                        .map(a -> ArchiveResponse.fromEntity(a, isFollowMap.containsKey(a.getAuthor().getId()), isLikeMap.containsKey(a.getId())))
+                        .toList())
                 .meta(PaginateResponse.builder().count(archives.size()).build())
                 .build();
     }
 
-    public ArchiveResponse get(Archive archive) {
-        return ArchiveResponse.fromEntity(archive);
+    private Map<Long, Boolean> getIsLikeMap(User author, Set<Long> archiveIds) {
+        var likes = archiveReactionRepository.findByAuthorAndReactionTypeAndArchiveIdIn(author, ReactionType.LIKE, archiveIds);
+        return likes.stream().collect(Collectors.toMap(l -> l.getArchive().getId(), f -> true));
+    }
+
+    private Map<Long, Boolean> getIsFollowMap(User author, Set<Long> authorIds) {
+        var follows = followerRepository.findByFollowerAndFollowIdIn(author, authorIds);
+        return follows.stream().collect(Collectors.toMap(f -> f.getFollow().getId(), f -> true));
+    }
+
+    public ArchiveResponse get(User user, Archive archive) {
+        var isFollow = followerRepository.existsByFollowerAndFollow(user, archive.getAuthor());
+        var isLike = archiveReactionRepository.existsByAuthorAndReactionTypeAndArchive(user, ReactionType.LIKE, archive);
+        return ArchiveResponse.fromEntity(archive, isFollow, isLike);
     }
 
     public ArchiveCollectResponse getByUser(User user, User author) {
@@ -117,8 +146,11 @@ public class ArchiveService {
             archives = archiveRepository.getByAuthorAndIsPublic(author, true);
         }
 
+        Set<Long> archiveIds = archives.stream().map(Archive::getId).collect(toSet());
+        var isFollow = followerRepository.existsByFollowerAndFollow(user, author);
+        var isLikeMap = getIsLikeMap(user, archiveIds);
         return ArchiveCollectResponse.builder()
-                .collect(archives.stream().map(ArchiveResponse::fromEntity).toList())
+                .collect(archives.stream().map(a -> ArchiveResponse.fromEntity(a, isFollow, isLikeMap.containsKey(a.getId()))).toList())
                 .meta(PaginateResponse.builder().count(archives.size()).build())
                 .build();
     }
@@ -129,8 +161,11 @@ public class ArchiveService {
             throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
         List<FolderArchive> folderArchives = folderArchiveRepository.getByFolder(folder);
+        Set<Long> archiveIds = folderArchives.stream().map(fa -> fa.getArchive().getId()).collect(toSet());
+        var isLikeMap = getIsLikeMap(user, archiveIds);
         return ArchiveCollectResponse.builder()
-            .collect(folderArchives.stream().map(fa -> ArchiveResponse.fromEntity(fa.getArchive())).toList())
+                .collect(folderArchives.stream().map(fa -> ArchiveResponse
+                        .fromEntity(fa.getArchive(), !user.getId().equals(fa.getArchive().getId()), isLikeMap.containsKey(fa.getArchive().getId()))).toList())
                 .meta(PaginateResponse.builder().count(folderArchives.size()).build())
                 .build();
     }
@@ -140,17 +175,19 @@ public class ArchiveService {
         if (!folder.getUser().getId().equals(user.getId())) {
             throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
-        return FolderDetailResponse.fromEntity(folder);
+        Set<Long> archiveIds = folder.getFolderArchives().stream().map(fa -> fa.getArchive().getId()).collect(toSet());
+        var isLikeMap = getIsLikeMap(user, archiveIds);
+        return FolderDetailResponse.fromEntity(folder, user, isLikeMap);
     }
 
     @Transactional
-    public boolean changeIsPublic(User user, Archive archive, boolean isPublic) {
+    public boolean changeIsPublic(Archive archive, boolean isPublic) {
         archive.setIsPublic(isPublic);
         return archive.getIsPublic();
     }
 
     @Transactional
-    public void deleteArchive(User user, Archive archive) {
+    public void deleteArchive(Archive archive) {
         archiveRepository.delete(archive);
     }
 

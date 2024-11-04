@@ -15,8 +15,6 @@ public class UserDetailResponse extends UserResponse {
 
     private String description;
 
-    private boolean isFollow;
-
     private int followerCnt;
 
     private int archiveCnt;

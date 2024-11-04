@@ -60,11 +60,11 @@ public class ArchiveController {
     @ApiResponse(responseCode = "200")
     @GetMapping(path = "archives/{archiveId}")
     public ResponseEntity<ArchiveResponse> retrieve(
-            @AuthenticationPrincipal User ignoredUser,
+            @AuthenticationPrincipal User user,
             @Entity(name = "archiveId") Archive archive,
             @PathVariable(name = "archiveId") String ignoredAuthorId
     ) {
-        return ResponseEntity.ok(service.get(archive));
+        return ResponseEntity.ok(service.get(user, archive));
     }
 
     @Operation(summary = "작성자로 아카이브 조회")
@@ -111,20 +111,20 @@ public class ArchiveController {
     @Operation(summary = "공개/비공개 전환")
     @ApiResponse(responseCode = "200")
     @PatchMapping("/archives/{archiveId}/public/{isPublic}")
-    public ResponseEntity<Boolean> changeIsPublic(@AuthenticationPrincipal User user,
+    public ResponseEntity<Boolean> changeIsPublic(@AuthenticationPrincipal User ignoreduser,
                                                   @Entity(name = "archiveId") Archive archive,
                                                   @PathVariable(name = "archiveId") long ignoredAuthorId,
                                                   @PathVariable(name = "isPublic") boolean isPublic) {
-        return ResponseEntity.ok(service.changeIsPublic(user, archive, isPublic));
+        return ResponseEntity.ok(service.changeIsPublic(archive, isPublic));
     }
 
     @Operation(summary = "아카이브 삭제")
     @ApiResponse(responseCode = "204")
     @DeleteMapping("/archives/{archiveId}")
-    public ResponseEntity<Void> deleteArchive(@AuthenticationPrincipal User user,
+    public ResponseEntity<Void> deleteArchive(@AuthenticationPrincipal User ignoreduser,
                                               @Entity(name = "archiveId") Archive archive,
                                               @PathVariable(name = "archiveId") long ignoredAuthorId) {
-        service.deleteArchive(user, archive);
+        service.deleteArchive(archive);
         return ResponseEntity.noContent().build();
     }
 

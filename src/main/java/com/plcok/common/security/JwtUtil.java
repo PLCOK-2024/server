@@ -37,10 +37,10 @@ public class JwtUtil {
         parser = Jwts.parser().setSigningKey(secretKey);
     }
 
-    public String createToken(Long id, RoleType role, LocalDateTime createdAt) {
-        Claims claims = Jwts.claims().setSubject(String.valueOf(id));
-        claims.put("role", role.name());
-        claims.put("createdAt", String.valueOf(createdAt));
+    public String createToken(User user) {
+        Claims claims = Jwts.claims().setSubject(String.valueOf(user.getId()));
+        claims.put("role", user.getRole().name());
+        claims.put("createdAt", String.valueOf(user.getCreatedAt()));
         ZonedDateTime now = ZonedDateTime.now();
         ZonedDateTime tokenValidity = now.plusSeconds(accessTokenValidTime);
         return Jwts.builder()

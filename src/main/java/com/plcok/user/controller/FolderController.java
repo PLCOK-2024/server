@@ -45,10 +45,10 @@ public class FolderController {
     @ApiResponse(responseCode = "204")
     @PostMapping("/{folderId}/archives/{archiveId}")
     public ResponseEntity<Void> addArchiveToFolder(@AuthenticationPrincipal(errorOnInvalidType = true) User user,
-                                                             @PathVariable(name = "folderId") long ignoredFolderId,
-                                                             @Entity(name = "folderId") Folder folder,
-                                                             @PathVariable(name = "archiveId") long ignoredArchiveId,
-                                                             @Entity(name = "archiveId") Archive archive) {
+                                                   @PathVariable(name = "folderId") long ignoredFolderId,
+                                                   @Entity(name = "folderId") Folder folder,
+                                                   @PathVariable(name = "archiveId") long ignoredArchiveId,
+                                                   @Entity(name = "archiveId") Archive archive) {
         folderService.addArchiveToFolder(user, folder, archive);
         return ResponseEntity.noContent().build();
     }

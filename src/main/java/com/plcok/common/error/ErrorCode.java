@@ -27,7 +27,7 @@ public enum ErrorCode {
     // FolderArchive
     FOLDERARCHIVE_ALREADY_ADDED(400, "FA001", "Already Added archive"),
     FOLDERARCHIVE_ALREADY_REMOVED(400, "FA002", "Already removed archive"),
-
+    ONLY_ADDABLE_FOLLOWERS_ARCHIVE(400, "FA003", "Only addable follower's archive"),
 
     // Archive
     ARCHIVE_NOT_FOUND(404, "A001", "Archive not found"),
