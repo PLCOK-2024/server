@@ -41,7 +41,7 @@ public class TagService {
             // 정확히 일치하는 태그는 최상단으로 이동
             var eq = tags.removeFirst(o -> o.getName().equals(q));
             if (eq != null) {
-                tags.add(0, tags.removeFirst(o -> o.getName().equals(q)));
+                tags.add(0, eq);
             }
         }
 
