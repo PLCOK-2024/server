@@ -35,6 +35,8 @@ public class ArchiveResponse {
 
     private boolean isLike;
 
+    private int commentCount;
+
     private LocalDateTime createdAt;
 
     private List<AttachResponse> archiveAttaches;
@@ -56,6 +58,7 @@ public class ArchiveResponse {
                         .filter(ar -> ar.getReactionType() == ReactionType.LIKE)
                         .toList().size())
                 .isLike(isLike)
+                .commentCount(archive.getArchiveComments().size())
                 .createdAt(archive.getCreatedAt())
                 .archiveAttaches(archive.getArchiveAttaches().stream().map(AttachResponse::fromEntity).toList())
                 .tags(archive.getTags().stream().map(ArchiveTagResponse::fromEntity).toList())
