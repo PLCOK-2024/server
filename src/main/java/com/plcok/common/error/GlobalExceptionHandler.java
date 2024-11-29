@@ -1,5 +1,7 @@
 package com.plcok.common.error;
 
+import com.plcok.common.notification.INotificationService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -15,7 +17,9 @@ import java.nio.file.AccessDeniedException;
 
 @Slf4j
 @ControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+    private final INotificationService notificationService;
 
     // binding error
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -68,6 +72,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> handleException(Exception ex) {
         log.error("handleException", ex);
+
+        notificationService.report(ex);
+
         ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }

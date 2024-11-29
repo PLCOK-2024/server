@@ -31,6 +31,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'com.azure.spring:spring-cloud-azure-starter-storage-blob:5.14.0'
+    implementation 'net.dv8tion:JDA:5.0.2'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
